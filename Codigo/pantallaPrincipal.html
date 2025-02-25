@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <title>Asignación de Turnos</title>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+
+  <!-- Encabezado principal -->
+  <header class="top-header">
+    <h1>Clínica Veterinaria BC SAS</h1>
+  </header>
+
+  <!-- Contenedor principal -->
+  <div class="main-container">
+    
+    <!-- Lado izquierdo: Formulario -->
+    <div class="appointment-form">
+      <h2>Registar Turno</h2>
+      <label for="codigo"></label>
+      <input type="text" id="codigo" placeholder="Codido Mascota" required>
+    
+      <label for="mascota"></label>
+      <input type="text" id="mascota" placeholder="Nombre Mascota" required>
+    
+      <label for="servicio"></label>
+      <input type="text" id="servicio" placeholder="Seleciona Servicio">
+    
+      <label for="profesional"></label>
+      <input type="text" id="profesional" placeholder="Selecciona Profesional">
+    
+      <div class="buttons">
+        <button id="crearTurno">Crear</button>
+        <button id="emergencyButton">Emergencia</button>
+      </div>
+    </div>
+
+    <!-- Lado derecho: Logo, botón de ajustes y turnos activos -->
+    <aside class="sidebar">
+      <div class="logo-container">
+        <img src="Imagenes/logo.png" alt="Logo de la Clínica Veterinarios BC SAS">
+      </div>
+      <button class="settings-button">AJUSTES</button>
+      
+      <!-- Sección de Turnos Activos -->
+      <section class="appointments-section">
+        <h2>Turnos Activos</h2>
+        <div id="appointmentsList" class="appointments-list">
+          <!-- Los turnos se agregarán dinámicamente aquí -->
+        </div>    
+      </section>
+    </aside>
+
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
