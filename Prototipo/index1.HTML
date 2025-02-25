@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <title>Asignación de Turnos</title>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+  <!-- Encabezado principal -->
+  <header class="top-header">
+    <div class="top-icon">
+      <img src="imagenes/logo.png" alt="Logo de la Clínica Veterinarios BC SAS" />
+    </div>
+    <h1>Asignación de Turnos - Clínica Veterinarios BC SAS</h1>
+  </header>
+
+  <main class="container">
+    <div class="content">
+      <!-- Barra lateral -->
+      <aside class="sidebar">
+        <div class="paw-icons">
+          <img src="imagenes/paw-icon.png" alt="Huellita" class="paw-icon" />
+          <img src="imagenes/paw-icon.png" alt="Huellita" class="paw-icon" />
+          <img src="imagenes/paw-icon.png" alt="Huellita" class="paw-icon" />
+          <img src="imagenes/paw-icon.png" alt="Huellita" class="paw-icon" />
+          <img src="imagenes/paw-icon.png" alt="Huellita" class="paw-icon" />
+        </div>
+      </aside>
+
+      <!-- Sección del Calendario -->
+      <section class="calendar-section">
+        <h2>Calendario</h2>
+        <form id="scheduleForm" class="calendar-controls">
+          <label for="selectDateButton">Selecciona una fecha:</label>
+          <input type="text" id="selectDateButton" class="calendar-button" placeholder="Selecciona una fecha" aria-label="Selecciona una fecha">
+          
+          <label for="selectTime">Selecciona una hora:</label>
+          <select id="selectTime" class="calendar-button" aria-label="Selecciona una hora">
+            <option value="">Hora</option>
+            <option value="10:00 AM">10:00 AM</option>
+            <option value="11:00 AM">11:00 AM</option>
+            <option value="12:00 PM">12:00 PM</option>
+            <option value="1:00 PM">1:00 PM</option>
+            <option value="2:00 PM">2:00 PM</option>
+            <option value="3:00 PM">3:00 PM</option>
+            <option value="4:00 PM">4:00 PM</option>
+            <option value="5:00 PM">5:00 PM</option>
+          </select>
+
+          <label for="selectDoctor">Selecciona el Profesional:</label>
+          <select id="selectDoctor" class="calendar-button" aria-label="Selecciona el médico">
+            <option value="">Profesional</option>
+            <option value="Dr. García">Dr. García</option>
+            <option value="Dra. López">Dra. López</option>
+            <option value="Dr. Pérez">Dr. Pérez</option>
+            <option value="Dra. Martínez">Dra. Martínez</option>
+          </select>
+          
+          <button id="scheduleButton" class="calendar-button" type="button">
+            <span>Agendar</span>
+          </button>
+        </form>
+      </section>
+
+      <button id="emergencyButton">Turno de Emergencia</button>
+
+
+      <!-- Sección de Próximos Turnos -->
+      <div id="upcoming-turns-container">
+      <section class="appointments-section">
+        <h2>Próximos Turnos</h2>
+        <div id="appointmentsList" class="appointments-list">
+          <!-- Los turnos se agregarán dinámicamente aquí -->
+        </div>    
+      </section>
+    </div>
+  </main>
+</script>
+<script src="scripts.js"></script>
+</body>
+</html>
