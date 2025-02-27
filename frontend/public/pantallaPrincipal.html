@@ -27,11 +27,17 @@
       <label for="mascota"></label>
       <input type="text" id="mascota" placeholder="Nombre Mascota" required>
     
-      <label for="servicio"></label>
-      <input type="text" id="servicio" placeholder="Seleciona Servicio">
+      <select id="servicio">
+        <option value="C">Consulta</option>
+        <option value="Badmos">B</option>
+        <option value="CL">Control</option>
+        <option value="E">Ecografia</option>
+        <option value="H">Hospitalizacion</option>
+    </select>
     
-      <label for="profesional"></label>
-      <input type="text" id="profesional" placeholder="Selecciona Profesional">
+      <select id="veterinario" required>
+        <option value="">Seleccione un veterinario</option>
+    </select>
     
       <div class="buttons">
         <button id="crearTurno">Crear</button>
@@ -42,20 +48,28 @@
     <!-- Lado derecho: Logo, botón de ajustes y turnos activos -->
     <aside class="sidebar">
       <div class="logo-container">
-        <img src="Imagenes/logo.png" alt="Logo de la Clínica Veterinarios BC SAS">
+        <img src="imagenes/logo.png" alt="Logo de la Clínica Veterinarios BC SAS">
       </div>
-      <button class="settings-button">AJUSTES</button>
+      <button id="settings-button">AJUSTES</button>
       
       <!-- Sección de Turnos Activos -->
       <section class="appointments-section">
         <h2>Turnos Activos</h2>
-        <div id="appointmentsList" class="appointments-list">
+        <div id="listaTurnos" class="appointments-list">
           <!-- Los turnos se agregarán dinámicamente aquí -->
         </div>    
       </section>
     </aside>
 
   </div>
+  <!-- Modal -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <iframe id="modal-iframe" src=""></iframe>
+    </div>
+  </div> <!-- ✅ Corregido el cierre -->
+
 
   <script src="scripts.js"></script>
 </body>

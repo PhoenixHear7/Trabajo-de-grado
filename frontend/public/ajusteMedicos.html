@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajustes Médicos</title>
+    <link rel="stylesheet" href="Styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        #veterinarios, #registro, #ListaDeVeterinarios {
+            margin-bottom: 15px;
+        }
+        input {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+        button {
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        /* Estilos para el botón de cerrar */
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botón para cerrar el modal -->
+    <button class="close-modal" onclick="window.parent.document.getElementById('myModal').style.display='none'">X</button>
+
+    <!-- Letrero de veterinarios -->
+    <div id="veterinarios">
+        <h1>Veterinarios</h1>
+    </div>
+
+    <!-- Campos para registro -->
+    <div id="registro">
+        <label for="nombreVeterinario"></label>
+        <input id="nombreVeterinario" type="text" required placeholder="Ingrese Nombre">
+        <label for="apellidoVeterinario"></label>
+        <input id="apellidoVeterinario" type="text" required placeholder="Ingrese Apellido">
+        <label for="rol"></label>
+        <input id="rol" type="text" required placeholder="Ingrese Rol">
+        <button type="submit">CREAR</button>
+    </div>
+
+    <!-- Lista de veterinarios -->
+    <div id="ListaDeVeterinarios">
+        <h2>Veterinarios Registrados</h2>
+        <ul id="listaVeterinarios"></ul>
+    </div>
+
+</body>
+</html>
+
