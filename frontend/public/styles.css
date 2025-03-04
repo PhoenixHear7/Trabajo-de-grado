@@ -47,8 +47,6 @@ body {
     margin: 55px auto;
 }
 
-
-
 /* Estilos de etiquetas e inputs */
 .appointment-form h2 {
     text-align: center;
@@ -74,7 +72,6 @@ body {
     display: flex;
     justify-content: center;
     margin: 5px;    
-
 }
 
 /* Botones */
@@ -85,7 +82,6 @@ body {
     border-radius: 5px;
     font-size: 20px;
     margin: 50px;
-    
 }
 
 .buttons button:first-child {
@@ -134,7 +130,6 @@ body {
     width: 120px;
 }
 
-
 /* Sección de turnos activos */
 .appointments-section {
     width: 100%; /* Se ajustó al 100% del sidebar para que no quede pequeño */
@@ -153,7 +148,8 @@ body {
 
 /* Contenedor de la lista de turnos */
 .appointments-list {
-    min-height: 100px;
+    max-height: 400px; /* Altura máxima para la lista de turnos */
+    overflow-y: auto; /* Agrega scroll vertical */
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 5px;
@@ -208,6 +204,7 @@ body {
     background-color: red;
     color: white;
 }
+
 /* Estilos del modal */
 .modal {
     display: none;
@@ -231,6 +228,7 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
+    margin: auto;
 }
 
 .modal-content iframe {

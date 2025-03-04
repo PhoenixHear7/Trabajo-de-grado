@@ -5,11 +5,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const crearButton = document.getElementById("crearTurno");
     const emergencyButton = document.getElementById("emergencyButton");
     const listaTurnos = document.getElementById("listaTurnos");
+    const settingsButton = document.getElementById("settings-button");
+    const modal = document.getElementById("myModal");
+    const modalIframe = document.getElementById("modal-iframe");
+    const closeModal = document.querySelector(".close");
 
-    if (!mascotaInput || !servicioInput || !veterinarioSelect || !crearButton || !emergencyButton || !listaTurnos) {
+    let turnoEnEdicion = null;
+
+    if (!mascotaInput || !servicioInput || !veterinarioSelect || !crearButton || !emergencyButton || !listaTurnos || !settingsButton || !modal || !modalIframe || !closeModal) {
         console.error("Error: No se encontraron todos los elementos necesarios en el DOM.");
         return;
     }
+
+    settingsButton.addEventListener("click", function () {
+        modalIframe.src = "ajusteMedicos.html";
+        modal.style.display = "flex";
+    });
+
+    closeModal.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener("click", function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    });
 
     async function crearTurno(esEmergencia = false) {
         const nombre_mascota = mascotaInput.value.trim();
@@ -28,8 +49,11 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/turnos/", {
-                method: "POST",
+            const method = turnoEnEdicion ? "PUT" : "POST";
+            const url = turnoEnEdicion ? `http://127.0.0.1:5000/turnos/${turnoEnEdicion}` : "http://127.0.0.1:5000/turnos/";
+
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -38,7 +62,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.ok) {
                 const result = await response.json();
-                alert("Turno registrado exitosamente");
+                alert(turnoEnEdicion ? "Turno actualizado exitosamente" : "Turno registrado exitosamente");
+                turnoEnEdicion = null;
                 actualizarListaTurnos();
             } else {
                 const error = await response.json();
@@ -60,9 +85,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 turnoElement.classList.add("turno-item");
                 turnoElement.innerHTML = `
                     <strong>Código:</strong> <span style="color: red;">${turno.codigo}</span><br>
-                    <strong>Mascota:</strong> ${turno.mascota_id} <br>
+                    <strong>Mascota:</strong> ${turno.nombre_mascota} <br>
                     <strong>Servicio:</strong> ${turno.servicio} <br>
-                    <strong>Veterinario:</strong> ${turno.veterinario_id} <br>
+                    <strong>Veterinario:</strong> ${turno.nombre_veterinario || 'N/A'} <br>
                     <strong>Estado:</strong> <span class="turno-estado">${turno.estado}</span> <br>
                     <div class="button-container">
                         <button class="edit-button">Editar</button>
@@ -72,12 +97,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 listaTurnos.appendChild(turnoElement);
 
-                turnoElement.querySelector(".delete-button").addEventListener("click", function () {
-                    turnoElement.remove();
+                turnoElement.querySelector(".delete-button").addEventListener("click", async function () {
+                    try {
+                        const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, {
+                            method: "DELETE"
+                        });
+
+                        if (response.ok) {
+                            turnoElement.remove();
+                            alert("Turno eliminado exitosamente");
+                        } else {
+                            const error = await response.json();
+                            alert("Error al eliminar el turno: " + error.error);
+                        }
+                    } catch (error) {
+                        console.error("Error al eliminar el turno:", error);
+                    }
                 });
 
                 turnoElement.querySelector(".edit-button").addEventListener("click", function () {
-                    editarEstado(turnoElement);
+                    mascotaInput.value = turno.nombre_mascota;
+                    servicioInput.value = turno.servicio;
+                    veterinarioSelect.value = turno.veterinario_id;
+                    turnoEnEdicion = turno.id;
                 });
             });
         } catch (error) {
@@ -96,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function cargarVeterinarios() {
         try {
-            const response = await fetch("http://127.0.0.1:5000/veterinarios"); 
+            const response = await fetch("http://127.0.0.1:5000/veterinarios");
             const veterinarios = await response.json();
 
             veterinarios.forEach(vet => {

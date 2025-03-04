@@ -59,3 +59,83 @@ def registrar_turno():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+def obtener_turnos():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT t.id, t.codigo, t.servicio, t.estado, t.fecha, t.mascota_id, t.veterinario_id, 
+                   m.nombre AS nombre_mascota, v.nombre AS nombre_veterinario 
+            FROM turnos t 
+            JOIN mascotas m ON t.mascota_id = m.id 
+            LEFT JOIN veterinarios v ON t.veterinario_id = v.id 
+            WHERE t.estado = 'espera'
+        """)
+        turnos_data = cur.fetchall()
+        cur.close()
+        conn.close()
+
+        turnos = []
+        for turno in turnos_data:
+            turnos.append({
+                "id": turno[0],
+                "codigo": turno[1],
+                "servicio": turno[2],
+                "estado": turno[3],
+                "fecha": turno[4],
+                "mascota_id": turno[5],
+                "veterinario_id": turno[6],
+                "nombre_mascota": turno[7],
+                "nombre_veterinario": turno[8]
+            })
+
+        return jsonify(turnos)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def eliminar_turno(turno_id):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM turnos WHERE id = %s", (turno_id,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"message": "Turno eliminado"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def actualizar_turno(turno_id):
+    try:
+        data = request.get_json()
+        nombre_mascota = data.get("nombre_mascota")
+        servicio = data.get("servicio")
+        id_veterinario = data.get("id_veterinario") or None
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+
+        # Verificar si la mascota ya está registrada
+        cur.execute("SELECT id FROM mascotas WHERE nombre = %s", (nombre_mascota,))
+        mascota = cur.fetchone()
+
+        if mascota:
+            id_mascota = mascota[0]
+        else:
+            # Insertar nueva mascota
+            cur.execute("INSERT INTO mascotas (nombre) VALUES (%s) RETURNING id", (nombre_mascota,))
+            id_mascota = cur.fetchone()[0]
+
+        # Actualizar el turno
+        cur.execute(
+            "UPDATE turnos SET servicio = %s, mascota_id = %s, veterinario_id = %s WHERE id = %s",
+            (servicio, id_mascota, id_veterinario, turno_id)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return jsonify({"message": "Turno actualizado"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
