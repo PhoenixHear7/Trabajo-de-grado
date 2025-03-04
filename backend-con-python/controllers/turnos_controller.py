@@ -27,12 +27,21 @@ def registrar_turno():
 
         # Obtener último turno del día para el servicio
         cur.execute(
-            "SELECT codigo FROM turnos WHERE servicio = %s AND fecha = %s ORDER BY id DESC LIMIT 1",
-            (servicio, fecha),
+            "SELECT codigo FROM turnos WHERE servicio = %s ORDER BY id DESC LIMIT 1",
+            (servicio,)
         )
         last_turno = cur.fetchone()
-        numero = int(last_turno[0][1:]) + 1 if last_turno else 1
-        codigo = servicio[0].upper() + str(numero).zfill(2)
+        if last_turno:
+            last_num = int(last_turno[0][2:])
+            numero = (last_num + 1) if last_num < 99 else 1
+        else:
+            numero = 1
+
+        # Generar el código según el servicio
+        if servicio == "control":
+            codigo = "CL" + str(numero).zfill(2)
+        else:
+            codigo = servicio[0].upper() + str(numero).zfill(2)
 
         # Insertar el nuevo turno
         cur.execute(

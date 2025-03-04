@@ -15,36 +15,75 @@ body {
     font-size: 20px;
     font-weight: bold;
     border-radius: 10px;
-    margin: 20px 38% 20px 6%;
+    margin: 20px auto;
+    width: 90%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container img {
+    max-width: 120px; /* Aumentar el tamaño del logo */
+    height: auto;
+    margin-left: 20px;
+}
+
+#settings-button {
+    background-color: #333; /* Fondo más oscuro */
+    color: white; /* Color del texto en blanco */
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+    margin-left: 20px;
+}
+
+#settings-button:hover {
+    background-color: #555;
+    color: white;
 }
 
 /* Contenedor principal que organiza los elementos en dos columnas */
 .main-container {
-    display: flex; /* Organiza los elementos en fila */
-    justify-content: space-between; /* Separa los elementos */
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten en varias filas si es necesario */
+    justify-content: space-between;
     align-items: flex-start;
     padding: 20px;
+    width: 90%;
+    margin: auto;
+    gap: 20px; /* Agregar espacio entre las secciones */
 }
 
 /* Sección izquierda: Formulario de ingreso */
 .appointment-form {
-    width: 55%; /* Se amplió un poco para que la sección derecha no sea demasiado grande */
+    flex: 1 1 45%; /* Permite que el formulario ocupe el 45% del ancho disponible */
     background: #678896;
-    padding: 20px; /*cltl z*/
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-left: 5%;
-    min-height: 600px;  
-    text-align: center; 
+    margin: 10px;
+    min-height: 600px;
+    text-align: center;
 }
 
-.appointment-form input {
-    width: 70% !important; /* Define un ancho fijo */
-    padding: 5px; /* Reduce el padding para hacerlo más compacto */
+.appointment-form input,
+.appointment-form select {
+    width: 72%; /* Reducir el tamaño en un 10% */
+    padding: 10px;
+    margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    display: block; /* Asegura que cada input esté en su propia línea */
-    margin: 55px auto;
+    display: block;
+    margin: 10px auto;
 }
 
 /* Estilos de etiquetas e inputs */
@@ -58,30 +97,22 @@ body {
     font-weight: bold;
 }
 
-.appointment-form input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
 /* Contenedor de botones */
 .buttons {
     margin-top: 20px;
     display: flex;
     justify-content: center;
-    margin: 5px;    
+    gap: 10px;
 }
 
 /* Botones */
 .buttons button {
-    padding: 15px 15px;
+    padding: 10px 20px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    font-size: 20px;
-    margin: 50px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 }
 
 .buttons button:first-child {
@@ -89,56 +120,65 @@ body {
     color: white;
 }
 
+.buttons button:first-child:hover {
+    background-color: #8a5a3b;
+}
+
 .buttons button:last-child {
     background-color: #dc3545;
     color: white;
 }
 
+.buttons button:last-child:hover {
+    background-color: #a71d2a;
+}
+
 /* Sección derecha: Sidebar */
 .sidebar {
-    width: 32%; /* Ajustamos el ancho para que se vea equilibrado */
+    flex: 1 1 45%; /* Permite que la barra lateral ocupe el 45% del ancho disponible */
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-right: 30px;
+    margin: 10px;
 }
 
 /* Contenedor del logo */
 .logo-container {
-    position: absolute;
-    top: 30px; /* Ajusta la posición vertical */
-    left: 76%;
-    transform: translateX(-50%); /* Centra el logo horizontalmente */
+    margin-bottom: 20px;
 }
 
 .logo-container img {
-    font-size: 40px;
+    max-width: 120px; /* Aumentar el tamaño del logo */
+    height: auto;
+    margin-left: 20px;
 }
 
 /* Botón de ajustes */
 #settings-button {
-    position: absolute;
-    top: 20px; /* Lo alinea con el logo */
-    right: 40px; /* Lo coloca a la derecha */
     background-color: #678896;
     color: black;
     padding: 10px;
-    font-size: 20px;
+    font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    width: 120px;
+    transition: background-color 0.3s ease;
+    margin-left: 20px;
+}
+
+#settings-button:hover {
+    background-color: #555;
+    color: white;
 }
 
 /* Sección de turnos activos */
 .appointments-section {
-    width: 100%; /* Se ajustó al 100% del sidebar para que no quede pequeño */
+    width: 100%;
     background: #678896;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     height: fit-content;
-    margin-right: 30px;
 }
 
 /* Título de Turnos Activos */
@@ -148,8 +188,8 @@ body {
 
 /* Contenedor de la lista de turnos */
 .appointments-list {
-    max-height: 400px; /* Altura máxima para la lista de turnos */
-    overflow-y: auto; /* Agrega scroll vertical */
+    max-height: 400px;
+    overflow-y: auto;
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 5px;
@@ -173,15 +213,19 @@ body {
     cursor: pointer;
     margin-top: 5px;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+    background-color: #a71d2a;
 }
 
 /* Contenedor de los botones dentro de cada turno */
 .button-container {
     display: flex;
-    justify-content: flex-end; /* Alinea los botones a la derecha */
-    gap: 10px; /* Espacio entre botones */
+    justify-content: flex-end;
+    gap: 10px;
     margin-top: 10px;
-    margin-left: 100px;
 }
 
 /* Ajuste de los botones para que se vean bien alineados */
@@ -191,6 +235,7 @@ body {
     cursor: pointer;
     border-radius: 5px;
     font-size: 14px;
+    transition: background-color 0.3s ease;
 }
 
 /* Estilos del botón Editar */
@@ -199,10 +244,8 @@ body {
     color: white;
 }
 
-/* Estilos del botón Eliminar */
-.delete-button {
-    background-color: red;
-    color: white;
+.edit-button:hover {
+    background-color: #0056b3;
 }
 
 /* Estilos del modal */
@@ -222,7 +265,7 @@ body {
 .modal-content {
     background: white;
     padding: 20px;
-    width: 50%;
+    width: 90%;
     max-width: 600px;
     border-radius: 10px;
     position: relative;
@@ -233,7 +276,7 @@ body {
 
 .modal-content iframe {
     width: 100%;
-    height: 400px; /* Ajusta la altura según lo necesites */
+    height: 400px;
     border: none;
 }
 
@@ -243,5 +286,23 @@ body {
     right: 15px;
     font-size: 20px;
     cursor: pointer;
+}
+
+/* Media Queries para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .appointment-form,
+    .sidebar {
+        width: 90%;
+    }
+
+    .buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
 }
 
