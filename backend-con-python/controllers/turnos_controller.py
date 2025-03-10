@@ -118,28 +118,15 @@ def eliminar_turno(turno_id):
 def actualizar_turno(turno_id):
     try:
         data = request.get_json()
-        nombre_mascota = data.get("nombre_mascota")
-        servicio = data.get("servicio")
-        id_veterinario = data.get("id_veterinario") or None
+        estado = data.get("estado")
+        modulo = data.get("modulo")
 
         conn = get_db_connection()
         cur = conn.cursor()
 
-        # Verificar si la mascota ya está registrada
-        cur.execute("SELECT id FROM mascotas WHERE nombre = %s", (nombre_mascota,))
-        mascota = cur.fetchone()
-
-        if mascota:
-            id_mascota = mascota[0]
-        else:
-            # Insertar nueva mascota
-            cur.execute("INSERT INTO mascotas (nombre) VALUES (%s) RETURNING id", (nombre_mascota,))
-            id_mascota = cur.fetchone()[0]
-
-        # Actualizar el turno
         cur.execute(
-            "UPDATE turnos SET servicio = %s, mascota_id = %s, veterinario_id = %s WHERE id = %s",
-            (servicio, id_mascota, id_veterinario, turno_id)
+            "UPDATE turnos SET estado = %s, modulo = %s WHERE id = %s",
+            (estado, modulo, turno_id)
         )
         conn.commit()
         cur.close()

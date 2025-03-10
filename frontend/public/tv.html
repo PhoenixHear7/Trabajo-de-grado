@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnos en Proceso y Publicidad</title>
+    <link rel="stylesheet" href="tv.css">
+</head>
+<!-- Encabezado principal -->
+<header class="top-header">
+    <div class="header-content">
+      <h1>Clínica Veterinaria Happy Pet</h1>
+      <div class="logo-container">
+        <img src="imagenes/logo.png" alt="Logo de la Clínica Veterinarios BC SAS">
+      </div>
+    </div>
+  </header>
+<body>
+    <div class="container">
+        <!-- Sección de turnos en proceso -->
+        <div class="turnos">
+            <h2>Turnos en Proceso</h2>
+            <ul id="listaTurnosEnProceso">
+                <li>No hay turnos en proceso</li>
+            </ul>
+        </div>
+        
+        <!-- Sección de publicidad -->
+        <div class="publicidad">
+            <h2>Publicidad</h2>
+            <video id="videoPublicidad" controls autoplay loop>
+                <source src="publicidad1.mp4" type="video/mp4">
+                Tu navegador no soporta videos.
+            </video>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
