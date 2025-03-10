@@ -1,17 +1,8 @@
-from flask import Blueprint, jsonify
-from db import get_db_connection
-from models.veterinario import Veterinario
+from flask import Blueprint
+from controllers.veterinarios_controller import obtener_veterinarios
 
-veterinarios_bp = Blueprint("veterinarios", __name__)
+veterinarios_bp = Blueprint("veterinarios", __name__, url_prefix="/veterinarios")
 
 @veterinarios_bp.route("/", methods=["GET"])
-def obtener_veterinarios():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM veterinarios")
-    veterinarios_data = cur.fetchall()
-    cur.close()
-    conn.close()
-
-    veterinarios = [Veterinario(*vet).to_dict() for vet in veterinarios_data]
-    return jsonify(veterinarios)
+def obtener_veterinarios_route():
+    return obtener_veterinarios()

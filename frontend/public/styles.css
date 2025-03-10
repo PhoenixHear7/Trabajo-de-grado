@@ -35,7 +35,7 @@ body {
 }
 
 #settings-button {
-    background-color: #333; /* Fondo más oscuro */
+    background-color: #07394d; /* Fondo más oscuro */
     color: white; /* Color del texto en blanco */
     padding: 10px;
     font-size: 16px;
@@ -151,24 +151,6 @@ body {
     max-width: 120px; /* Aumentar el tamaño del logo */
     height: auto;
     margin-left: 20px;
-}
-
-/* Botón de ajustes */
-#settings-button {
-    background-color: #678896;
-    color: black;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.3s ease;
-    margin-left: 20px;
-}
-
-#settings-button:hover {
-    background-color: #555;
-    color: white;
 }
 
 /* Sección de turnos activos */

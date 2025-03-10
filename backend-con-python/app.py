@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Registrar las rutas
-app.register_blueprint(turnos_bp, )
+app.register_blueprint(turnos_bp, url_prefix="/turnos")
 app.register_blueprint(veterinarios_bp, url_prefix="/veterinarios")
 
 if __name__ == "__main__":
