@@ -28,12 +28,12 @@
     <div class="appointment-form">
       <h2>Registar Turno</h2>
       <label for="codigo"></label>
-      <input type="text" id="codigo" placeholder="Codido Mascota" required>
+      <input type="number" id="codigo_mascota" placeholder="Codigo Mascota" required>
     
       <label for="mascota"></label>
       <input type="text" id="mascota" placeholder="Nombre Mascota" required>
     
-      <select id="servicio">
+      <select id="servicio" required>
         <option value="consulta">Consulta</option>
         <option value="vacunacion">Vacunacion</option>
         <option value="control">Control</option>
@@ -68,7 +68,7 @@
         <span class="close">&times;</span>
         <iframe id="modal-iframe" src=""></iframe>
     </div>
-  </div> <!--  Corregido el cierre -->
+  </div> 
 
   <script src="scripts.js"></script>
 </body>

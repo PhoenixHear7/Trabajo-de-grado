@@ -87,7 +87,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     turnoElement.querySelector(".finalizar-button").addEventListener("click", async function () {
                         try {
                             const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, {
+<<<<<<< HEAD
                                 method: "DELETE"
+=======
+                                method: "DETELE"
+>>>>>>> de46ffe8e2ec606d514a03b94ce3d23b4e5eb2ad
                             });
 
                             if (response.ok) {
