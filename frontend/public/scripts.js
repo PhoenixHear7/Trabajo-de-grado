@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const mascotaInput = document.getElementById("mascota");
+    const codigoMascotaInput = document.getElementById("codigo_mascota");
     const servicioInput = document.getElementById("servicio");
     const veterinarioSelect = document.getElementById("veterinario");
     const crearButton = document.getElementById("crearTurno");
@@ -9,40 +10,40 @@ document.addEventListener("DOMContentLoaded", function () {
     const modal = document.getElementById("myModal");
     const modalIframe = document.getElementById("modal-iframe");
     const closeModal = document.querySelector(".close");
+    const nombreVeterinarioInput = document.getElementById("nombreVeterinario");
+    const apellidoVeterinarioInput = document.getElementById("apellidoVeterinario");
+    const rolInput = document.getElementById("rol");
+    const crearVeterinarioButton = document.getElementById("crearVeterinario");
+    const listaVeterinarios = document.getElementById("listaVeterinarios");
 
     let turnoEnEdicion = null;
 
-    if (!mascotaInput || !servicioInput || !veterinarioSelect || !crearButton || !emergencyButton || !listaTurnos || !settingsButton || !modal || !modalIframe || !closeModal) {
+    if (!mascotaInput || !codigoMascotaInput || !servicioInput || !veterinarioSelect || !crearButton || !emergencyButton || !listaTurnos || !settingsButton || !modal || !modalIframe || !closeModal) {
         console.error("Error: No se encontraron todos los elementos necesarios en el DOM.");
         return;
     }
 
-    settingsButton.addEventListener("click", function () {
+    settingsButton.addEventListener("click", () => {
         modalIframe.src = "ajusteMedicos.html";
         modal.style.display = "flex";
     });
 
-    closeModal.addEventListener("click", function () {
-        modal.style.display = "none";
-    });
-
-    window.addEventListener("click", function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    });
+    closeModal.addEventListener("click", () => modal.style.display = "none");
+    window.addEventListener("click", (event) => { if (event.target == modal) modal.style.display = "none"; });
 
     async function crearTurno(esEmergencia = false) {
+        const codigo_mascota = codigoMascotaInput.value.trim();
         const nombre_mascota = mascotaInput.value.trim();
         const servicio = servicioInput.value;
-        const id_veterinario = veterinarioSelect.value;
+        const id_veterinario = veterinarioSelect.value ? parseInt(veterinarioSelect.value) : null;
 
-        if (!nombre_mascota || !servicio || !id_veterinario) {
+        if (!codigo_mascota || !nombre_mascota || !servicio) {
             alert("Por favor, completa todos los campos antes de crear el turno.");
             return;
         }
 
         const turnoData = {
+            codigo_mascota,
             nombre_mascota,
             servicio,
             id_veterinario: id_veterinario ? parseInt(id_veterinario) : null
@@ -78,8 +79,8 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const response = await fetch("http://127.0.0.1:5000/turnos/");
             const turnos = await response.json();
-
             listaTurnos.innerHTML = "";
+
             turnos.forEach(turno => {
                 const turnoElement = document.createElement("div");
                 turnoElement.classList.add("turno-item");
@@ -95,14 +96,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 `;
 
-                listaTurnos.appendChild(turnoElement);
-
-                turnoElement.querySelector(".delete-button").addEventListener("click", async function () {
+                turnoElement.querySelector(".delete-button").addEventListener("click", async () => {
                     try {
-                        const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, {
-                            method: "DELETE"
-                        });
-
+                        const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, { method: "DELETE" });
                         if (response.ok) {
                             turnoElement.remove();
                             alert("Turno eliminado exitosamente");
@@ -115,36 +111,30 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 });
 
-                turnoElement.querySelector(".edit-button").addEventListener("click", function () {
+                turnoElement.querySelector(".edit-button").addEventListener("click", () => {
+                    codigoMascotaInput.value = turno.codigo_mascota;
                     mascotaInput.value = turno.nombre_mascota;
                     servicioInput.value = turno.servicio;
                     veterinarioSelect.value = turno.veterinario_id;
                     turnoEnEdicion = turno.id;
                 });
+
+                listaTurnos.appendChild(turnoElement);
             });
         } catch (error) {
             console.error("Error al actualizar la lista de turnos:", error);
         }
     }
 
-    crearButton.addEventListener("click", function () {
-        crearTurno(false);
-    });
-
-    emergencyButton.addEventListener("click", function () {
-        servicioInput.value = "E"; // Emergencia
-        crearTurno(true);
-    });
-
     async function cargarVeterinarios() {
         try {
             const response = await fetch("http://127.0.0.1:5000/veterinarios");
             const veterinarios = await response.json();
-
+            veterinarioSelect.innerHTML = '<option value="">Seleccione un veterinario</option>';
             veterinarios.forEach(vet => {
                 const option = document.createElement("option");
                 option.value = vet.id;
-                option.textContent = `${vet.nombre}`;
+                option.textContent = `${vet.nombre} `;
                 veterinarioSelect.appendChild(option);
             });
         } catch (error) {
@@ -152,8 +142,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Llamar a la función para cargar los veterinarios
+    crearButton.addEventListener("click", () => crearTurno(false));
+    emergencyButton.addEventListener("click", () => { servicioInput.value = "E"; crearTurno(true); });
     cargarVeterinarios();
-    // Llamar a la función para actualizar la lista de turnos al cargar la página
     actualizarListaTurnos();
 });

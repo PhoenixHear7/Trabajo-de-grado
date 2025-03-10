@@ -1,29 +1,43 @@
 from db import get_db_connection
 from flask import jsonify, request
 from datetime import datetime
+from models.turno import Turno
 
-def registrar_turno():
+def registrar_turno(): # esta fallando...
     try:
         data = request.get_json()
+        # print("Datos recibidos:", data)  # Depuración
+        if not data:
+            return jsonify({"error": "No se proporcionaron datos"}), 400
+
+        try:
+            codigo_mascota = int(data.get("codigo_mascota"))
+        except (TypeError, ValueError):
+            return jsonify({"error": "Código de mascota inválido"}), 400
+
         nombre_mascota = data.get("nombre_mascota")
         servicio = data.get("servicio")
         id_veterinario = data.get("id_veterinario") or None
         estado = "espera"
         fecha = datetime.now().strftime("%Y-%m-%d")
 
+        if not codigo_mascota or not nombre_mascota or not servicio:
+            return jsonify({"error": "Faltan datos obligatorios"}), 400
+
         conn = get_db_connection()
         cur = conn.cursor()
 
-        # Verificar si la mascota ya está registrada
-        cur.execute("SELECT id FROM mascotas WHERE nombre = %s", (nombre_mascota,))
+        # Verificar si la mascota ya está registrada por su código
+        cur.execute("SELECT id FROM mascotas WHERE id = %s", (codigo_mascota,))
         mascota = cur.fetchone()
 
         if mascota:
             id_mascota = mascota[0]
         else:
             # Insertar nueva mascota
-            cur.execute("INSERT INTO mascotas (nombre) VALUES (%s) RETURNING id", (nombre_mascota,))
+            cur.execute("INSERT INTO mascotas (id, nombre) VALUES (%s, %s) RETURNING id", (codigo_mascota, nombre_mascota))
             id_mascota = cur.fetchone()[0]
+            print("Nueva mascota registrada:", id_mascota)  # Depuración
 
         # Obtener último turno del día para el servicio
         cur.execute(
@@ -31,9 +45,13 @@ def registrar_turno():
             (servicio,)
         )
         last_turno = cur.fetchone()
+        print("Último turno obtenido:", last_turno)  # Depuración
         if last_turno:
-            last_num = int(last_turno[0][2:])
-            numero = (last_num + 1) if last_num < 99 else 1
+            try:
+                last_num = int(last_turno[0][2:])
+                numero = (last_num + 1) if last_num < 99 else 1
+            except ValueError:
+                return jsonify({"error": "Formato de código inválido"}), 500
         else:
             numero = 1
 
@@ -53,6 +71,7 @@ def registrar_turno():
         cur.close()
         conn.close()
 
+        print("Turno registrado exitosamente:", nuevo_turno)  # Depuración
         # Estructurar la respuesta
         turno_dict = {
             "id": nuevo_turno[0],
@@ -60,26 +79,25 @@ def registrar_turno():
             "servicio": nuevo_turno[2],
             "estado": nuevo_turno[3],
             "fecha": nuevo_turno[4],
-            "mascota_id": nuevo_turno[5],
+            "mascota_id": nuevo_turno[5],  
             "veterinario_id": nuevo_turno[6],
         }
 
         return jsonify({"message": "Turno registrado", "turno": turno_dict}), 201
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print("Error en registrar_turno:", str(e))  # Depuración
+        return jsonify({"error este essss": str(e)}), 500
 
 def obtener_turnos():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("""
-            SELECT t.id, t.codigo, t.servicio, t.estado, t.fecha, t.mascota_id, t.veterinario_id, 
-                   m.nombre AS nombre_mascota, v.nombre AS nombre_veterinario 
-            FROM turnos t 
-            JOIN mascotas m ON t.mascota_id = m.id 
-            LEFT JOIN veterinarios v ON t.veterinario_id = v.id 
-            WHERE t.estado = 'espera'
+            SELECT t.id, t.codigo, t.servicio, t.estado, t.fecha, t.veterinario_id, t.modulo, m.nombre AS nombre_mascota, v.nombre AS nombre_veterinario
+            FROM turnos t
+            LEFT JOIN mascotas m ON t.mascota_id = m.id
+            LEFT JOIN veterinarios v ON t.veterinario_id = v.id
         """)
         turnos_data = cur.fetchall()
         cur.close()
@@ -88,15 +106,15 @@ def obtener_turnos():
         turnos = []
         for turno in turnos_data:
             turnos.append({
-                "id": turno[0],
-                "codigo": turno[1],
-                "servicio": turno[2],
-                "estado": turno[3],
-                "fecha": turno[4],
-                "mascota_id": turno[5],
-                "veterinario_id": turno[6],
-                "nombre_mascota": turno[7],
-                "nombre_veterinario": turno[8]
+                "id": turno["id"],
+                "codigo": turno["codigo"],
+                "servicio": turno["servicio"],
+                "estado": turno["estado"],
+                "fecha": turno["fecha"],
+                "veterinario_id": turno["veterinario_id"],
+                "modulo": turno["modulo"],
+                "nombre_mascota": turno["nombre_mascota"],
+                "nombre_veterinario": turno["nombre_veterinario"]
             })
 
         return jsonify(turnos)
@@ -118,28 +136,15 @@ def eliminar_turno(turno_id):
 def actualizar_turno(turno_id):
     try:
         data = request.get_json()
-        nombre_mascota = data.get("nombre_mascota")
-        servicio = data.get("servicio")
-        id_veterinario = data.get("id_veterinario") or None
+        estado = data.get("estado")
+        modulo = data.get("modulo")
 
         conn = get_db_connection()
         cur = conn.cursor()
 
-        # Verificar si la mascota ya está registrada
-        cur.execute("SELECT id FROM mascotas WHERE nombre = %s", (nombre_mascota,))
-        mascota = cur.fetchone()
-
-        if mascota:
-            id_mascota = mascota[0]
-        else:
-            # Insertar nueva mascota
-            cur.execute("INSERT INTO mascotas (nombre) VALUES (%s) RETURNING id", (nombre_mascota,))
-            id_mascota = cur.fetchone()[0]
-
-        # Actualizar el turno
         cur.execute(
-            "UPDATE turnos SET servicio = %s, mascota_id = %s, veterinario_id = %s WHERE id = %s",
-            (servicio, id_mascota, id_veterinario, turno_id)
+            "UPDATE turnos SET estado = %s, modulo = %s WHERE id = %s",
+            (estado, modulo, turno_id)
         )
         conn.commit()
         cur.close()

@@ -1,7 +1,5 @@
-from flask import Blueprint, jsonify
-from db import get_db_connection
-from models.turno import Turno
-from controllers.turnos_controller import registrar_turno, obtener_turnos, eliminar_turno, actualizar_turno  # Importar las funciones
+from flask import Blueprint
+from controllers.turnos_controller import obtener_turnos, actualizar_turno, eliminar_turno, registrar_turno
 
 turnos_bp = Blueprint("turnos", __name__, url_prefix="/turnos")
 
@@ -9,17 +7,14 @@ turnos_bp = Blueprint("turnos", __name__, url_prefix="/turnos")
 def obtener_turnos_route():
     return obtener_turnos()
 
-# Registrar la ruta POST para crear un turno
 @turnos_bp.route("/", methods=["POST"])
-def crear_turno():
+def registrar_turno_route():
     return registrar_turno()
 
-# Registrar la ruta DELETE para eliminar un turno
-@turnos_bp.route("/<int:turno_id>", methods=["DELETE"])
-def eliminar_turno_route(turno_id):
-    return eliminar_turno(turno_id)
-
-# Registrar la ruta PUT para actualizar un turno
 @turnos_bp.route("/<int:turno_id>", methods=["PUT"])
 def actualizar_turno_route(turno_id):
     return actualizar_turno(turno_id)
+
+@turnos_bp.route("/<int:turno_id>", methods=["DELETE"])
+def eliminar_turno_route(turno_id):
+    return eliminar_turno(turno_id)
