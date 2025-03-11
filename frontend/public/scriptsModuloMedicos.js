@@ -2,8 +2,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const listaTurnosEnEspera = document.getElementById("listaTurnosEnEspera");
     const listaTurnosEnProceso = document.getElementById("listaTurnosEnProceso");
     const muestra = document.getElementById("muestra");
+    const consultorioDialog = document.getElementById("consultorioDialog");
+    const consultorioSelect = document.getElementById("consultorioSelect");
+    const consultorioConfirmButton = document.getElementById("consultorioConfirmButton");
 
-    const consultorioId = 1; // Cambia este valor según el consultorio correspondiente
+    let consultorioId = null;
+
+    // Mostrar cuadro de diálogo para seleccionar el consultorio
+    function seleccionarConsultorio() {
+        consultorioDialog.style.display = "flex";
+    }
+
+    consultorioConfirmButton.addEventListener("click", function () {
+        const consultorioNum = parseInt(consultorioSelect.value);
+
+        if (isNaN(consultorioNum) || consultorioNum < 1 || consultorioNum > 8) {
+            alert("Consultorio inválido. Por favor, seleccione un número entre 1 y 8.");
+        } else {
+            consultorioId = consultorioNum;
+            consultorioDialog.style.display = "none";
+            cargarTurnos();
+        }
+    });
 
     async function cargarTurnos() {
         try {
@@ -23,9 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     <strong>Estado:</strong> <span class="turno-estado">${turno.estado}</span> <br>
                     <div class="button-container">
                         ${turno.estado === 'espera' ? `
-                            <select class="consultorio-select">
-                                ${Array.from({ length: 8 }, (_, i) => `<option value="${i + 1}">Consultorio ${i + 1}</option>`).join('')}
-                            </select>
                             <button class="aceptar-button">Aceptar</button>
                         ` : `
                             <button class="retornar-button">Retornar</button>
@@ -38,16 +55,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     listaTurnosEnEspera.appendChild(turnoElement);
 
                     turnoElement.querySelector(".aceptar-button").addEventListener("click", async function () {
-                        const consultorioSelect = turnoElement.querySelector(".consultorio-select");
-                        const modulo = consultorioSelect.value;
-
                         try {
                             const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type": "application/json"
                                 },
-                                body: JSON.stringify({ estado: 'proceso', modulo })
+                                body: JSON.stringify({ estado: 'proceso', modulo: consultorioId })
                             });
 
                             if (response.ok) {
@@ -87,6 +101,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     turnoElement.querySelector(".finalizar-button").addEventListener("click", async function () {
                         try {
                             const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ estado: 'finalizado', modulo: null })
                             });
 
                             if (response.ok) {
@@ -108,6 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Cargar la lista de turnos al cargar la página
-    cargarTurnos();
+    // Mostrar el cuadro de diálogo para seleccionar el consultorio al cargar la página
+    seleccionarConsultorio();
 });

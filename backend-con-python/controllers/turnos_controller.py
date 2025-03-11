@@ -3,10 +3,9 @@ from flask import jsonify, request
 from datetime import datetime
 from models.turno import Turno
 
-def registrar_turno(): # esta fallando...
+def registrar_turno():
     try:
         data = request.get_json()
-        # print("Datos recibidos:", data)  # Depuración
         if not data:
             return jsonify({"error": "No se proporcionaron datos"}), 400
 
@@ -32,23 +31,23 @@ def registrar_turno(): # esta fallando...
         mascota = cur.fetchone()
 
         if mascota:
-            id_mascota = mascota[0]
+            id_mascota = mascota["id"]
         else:
             # Insertar nueva mascota
             cur.execute("INSERT INTO mascotas (id, nombre) VALUES (%s, %s) RETURNING id", (codigo_mascota, nombre_mascota))
-            id_mascota = cur.fetchone()[0]
+            id_mascota = cur.fetchone()["id"]
             print("Nueva mascota registrada:", id_mascota)  # Depuración
 
         # Obtener último turno del día para el servicio
         cur.execute(
-            "SELECT codigo FROM turnos WHERE servicio = %s ORDER BY id DESC LIMIT 1",
-            (servicio,)
+            "SELECT codigo FROM turnos WHERE servicio = %s AND fecha = %s ORDER BY id DESC LIMIT 1",
+            (servicio, fecha)
         )
         last_turno = cur.fetchone()
         print("Último turno obtenido:", last_turno)  # Depuración
         if last_turno:
             try:
-                last_num = int(last_turno[0][2:])
+                last_num = int(last_turno["codigo"][2:])
                 numero = (last_num + 1) if last_num < 99 else 1
             except ValueError:
                 return jsonify({"error": "Formato de código inválido"}), 500
@@ -74,20 +73,20 @@ def registrar_turno(): # esta fallando...
         print("Turno registrado exitosamente:", nuevo_turno)  # Depuración
         # Estructurar la respuesta
         turno_dict = {
-            "id": nuevo_turno[0],
-            "codigo": nuevo_turno[1],
-            "servicio": nuevo_turno[2],
-            "estado": nuevo_turno[3],
-            "fecha": nuevo_turno[4],
-            "mascota_id": nuevo_turno[5],  
-            "veterinario_id": nuevo_turno[6],
+            "id": nuevo_turno["id"],
+            "codigo": nuevo_turno["codigo"],
+            "servicio": nuevo_turno["servicio"],
+            "estado": nuevo_turno["estado"],
+            "fecha": nuevo_turno["fecha"],
+            "mascota_id": nuevo_turno["mascota_id"],  
+            "veterinario_id": nuevo_turno["veterinario_id"],
         }
 
         return jsonify({"message": "Turno registrado", "turno": turno_dict}), 201
 
     except Exception as e:
         print("Error en registrar_turno:", str(e))  # Depuración
-        return jsonify({"error este essss": str(e)}), 500
+        return jsonify({"error": str(e)}), 500
 
 def obtener_turnos():
     try:
@@ -139,6 +138,9 @@ def actualizar_turno(turno_id):
         estado = data.get("estado")
         modulo = data.get("modulo")
 
+        if estado not in ["espera", "proceso", "finalizado"]:
+            return jsonify({"error": "Estado inválido"}), 400
+
         conn = get_db_connection()
         cur = conn.cursor()
 
@@ -152,4 +154,6 @@ def actualizar_turno(turno_id):
 
         return jsonify({"message": "Turno actualizado"}), 200
     except Exception as e:
+        print("Error en actualizar_turno:", str(e))  # Depuración
         return jsonify({"error": str(e)}), 500
+

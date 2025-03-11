@@ -5,6 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modulo Consultorio</title>
     <link rel="stylesheet" href="stylesVeterinario.css">
+    <style>
+        .dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .dialog-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .turno-item {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .button-container {
+            margin-top: 10px;
+        }
+        .aceptar-button, .retornar-button, .finalizar-button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .aceptar-button {
+            background-color: #4CAF50;
+            color: black;
+        }
+        .retornar-button {
+            background-color: #f0ad4e;
+            color:black;
+        }
+        .finalizar-button {
+            background-color: #d9534f;
+            color: black;
+        }
+    </style>
 </head>
 <body class="pantallaTurnos">
     <div class="nombreClinica">
@@ -24,6 +72,27 @@
             </div>
         </div>
     </div>
+
+    <!-- Cuadro de diálogo para seleccionar el consultorio -->
+    <div id="consultorioDialog" class="dialog">
+        <div class="dialog-content">
+            <h2>Seleccione el Consultorio</h2>
+            <select id="consultorioSelect">
+                <option value="" disabled selected>Seleccione un consultorio</option>
+                <option value="1">Consultorio 1</option>
+                <option value="2">Consultorio 2</option>
+                <option value="3">Consultorio 3</option>
+                <option value="4">Consultorio 4</option>
+                <option value="5">Consultorio 5</option>
+                <option value="6">Consultorio 6</option>
+                <option value="7">Consultorio 7</option>
+                <option value="8">Consultorio 8</option>
+            </select>
+            <button id="consultorioConfirmButton">Confirmar</button>
+        </div>
+    </div>
+
     <script src="scriptsModuloMedicos.js"></script>
-</body>    
+</body>
+</html>
 

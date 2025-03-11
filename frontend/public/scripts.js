@@ -16,9 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const crearVeterinarioButton = document.getElementById("crearVeterinario");
     const listaVeterinarios = document.getElementById("listaVeterinarios");
 
-    let turnoEnEdicion = null;
-
-    if (!mascotaInput || !codigoMascotaInput || !servicioInput || !veterinarioSelect || !crearButton || !emergencyButton || !listaTurnos || !settingsButton || !modal || !modalIframe || !closeModal) {
+    if (!mascotaInput || !codigoMascotaInput || !servicioInput  || !crearButton || !emergencyButton || !listaTurnos || !settingsButton || !modal || !modalIframe || !closeModal) {
         console.error("Error: No se encontraron todos los elementos necesarios en el DOM.");
         return;
     }
@@ -50,11 +48,8 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         try {
-            const method = turnoEnEdicion ? "PUT" : "POST";
-            const url = turnoEnEdicion ? `http://127.0.0.1:5000/turnos/${turnoEnEdicion}` : "http://127.0.0.1:5000/turnos/";
-
-            const response = await fetch(url, {
-                method: method,
+            const response = await fetch("http://127.0.0.1:5000/turnos/", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -63,8 +58,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.ok) {
                 const result = await response.json();
-                alert(turnoEnEdicion ? "Turno actualizado exitosamente" : "Turno registrado exitosamente");
-                turnoEnEdicion = null;
+                alert("Turno registrado exitosamente");
+                limpiarInputs();
                 actualizarListaTurnos();
             } else {
                 const error = await response.json();
@@ -73,6 +68,13 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             console.error("Error al registrar el turno:", error);
         }
+    }
+
+    function limpiarInputs() {
+        codigoMascotaInput.value = "";
+        mascotaInput.value = "";
+        servicioInput.value = "";
+        veterinarioSelect.value = "";
     }
 
     async function actualizarListaTurnos() {
@@ -91,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     <strong>Veterinario:</strong> ${turno.nombre_veterinario || 'N/A'} <br>
                     <strong>Estado:</strong> <span class="turno-estado">${turno.estado}</span> <br>
                     <div class="button-container">
-                        <button class="edit-button">Editar</button>
                         <button class="delete-button">Eliminar</button>
                     </div>
                 `;
@@ -109,14 +110,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     } catch (error) {
                         console.error("Error al eliminar el turno:", error);
                     }
-                });
-
-                turnoElement.querySelector(".edit-button").addEventListener("click", () => {
-                    codigoMascotaInput.value = turno.codigo_mascota;
-                    mascotaInput.value = turno.nombre_mascota;
-                    servicioInput.value = turno.servicio;
-                    veterinarioSelect.value = turno.veterinario_id;
-                    turnoEnEdicion = turno.id;
                 });
 
                 listaTurnos.appendChild(turnoElement);
