@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modulo Consultorio</title>
-    <link rel="stylesheet" href="stylesVeterinario.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesVeterinario.css') }}">
     <style>
         .dialog {
             display: none;
@@ -58,7 +58,7 @@
     <div class="nombreClinica">
         <h1>Clinica Veterinaria Happy Pet</h1>
     </div>
-    <img class="logo" src="imagenes/logo.png" alt="logo de la clinica veterinarios BC sas"/>
+    <img class="logo" src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Logo de la clínica">
     <div class="contenedor">
         <div id="vistaTurnosEnEspera">
             <h2>Turnos En Espera</h2>
@@ -92,7 +92,6 @@
         </div>
     </div>
 
-    <script src="scriptsModuloMedicos.js"></script>
+    <script src="{{ url_for('static', filename='js/scriptsModuloMedicos.js') }}"></script>
 </body>
 </html>
-
