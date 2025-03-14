@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modulo Consultorio</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesVeterinario.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         .dialog {
             display: none;
@@ -22,13 +23,34 @@
             padding: 20px;
             border-radius: 5px;
             text-align: center;
+            width: 300px;
         }
         .turno-item {
-            background: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #52768B;
             border: 1px solid #ddd;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
+            color: white;
+        }
+        .turno-codigo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        .turno-info {
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+        .turno-info div {
+            margin-bottom: 5px;
+        }
+        .turno-veterinario {
+            text-decoration: underline;
+            color: #f0ad4e;
         }
         .button-container {
             margin-top: 10px;
@@ -41,7 +63,7 @@
             cursor: pointer;
         }
         .aceptar-button {
-            background-color: #4CAF50;
+            background-color: #f0ad4e;
             color: black;
         }
         .retornar-button {
@@ -52,14 +74,49 @@
             background-color: #d9534f;
             color: black;
         }
+        .alert {
+            background-color: #f44336;
+            color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .consultorio-titulo {
+            margin-left: auto;
+            font-size: 24px;
+            color: white;
+        }
+        .turno-proceso-codigo {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .turno-proceso-info {
+            font-family: 'JetBrains Mono', monospace;
+            text-align: left;
+            margin-left: 20px;
+        }
+        .turno-proceso-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .turno-proceso-buttons button {
+            width: 80%;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body class="pantallaTurnos">
-    <div class="nombreClinica">
-        <h1>Clinica Veterinaria Happy Pet</h1>
+    <div class="header">
+        <img class="logo" src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Logo de la clínica">
+        <h1 class="nombreClinica">Clinica Veterinaria Happy Pet</h1>
+        <h1 id="consultorioTitulo" class="consultorio-titulo"></h1>
     </div>
-    <img class="logo" src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Logo de la clínica">
     <div class="contenedor">
+        <div id="alertContainer"></div>
         <div id="vistaTurnosEnEspera">
             <h2>Turnos En Espera</h2>
             <ul id="listaTurnosEnEspera"></ul>
@@ -89,6 +146,17 @@
                 <option value="8">Consultorio 8</option>
             </select>
             <button id="consultorioConfirmButton">Confirmar</button>
+        </div>
+    </div>
+
+    <!-- Cuadro de diálogo para seleccionar el veterinario -->
+    <div id="veterinarioDialog" class="dialog">
+        <div class="dialog-content">
+            <h2>Seleccione el Veterinario</h2>
+            <select id="veterinarioSelect">
+                <option value="" disabled selected>Seleccione un veterinario</option>
+            </select>
+            <button id="veterinarioConfirmButton">Confirmar</button>
         </div>
     </div>
 

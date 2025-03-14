@@ -1,3 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    background-color: #52768B;
+    padding: 10px;
+    border-radius: 12px;
+    margin: 5px;
+    color: white;
+}
+
+.logo {
+    height: 50px;
+    margin-right: 10px;
+}
+
+.nombreClinica {
+    font-size: 24px;
+    margin: 0;
+}
+
+.consultorio-titulo {
+    margin-left: auto;
+    font-size: 24px;
+    color: white;
+}
+
 .contenedor {
     display: flex;
     width: 99%;
@@ -5,38 +35,133 @@
     height: 100vh;
     border-radius: 12px;
     margin: 5px;
+    overflow: hidden;
 }
+
 #vistaTurnosEnProceso {
     width: 30%;
-    background-color:#7A97A0 ;
+    background-color: #7A97A0;
     padding: 10px;
     border-radius: 12px;
     margin: 15px;
     height: 100vh;
     text-align: center;
-
 }
 
 #vistaTurnosEnEspera {
     width: 65%;
-    background-color:#7A97A0 ;
+    background-color: #7A97A0;
     padding: 10px;
     border-radius: 12px;
     margin: 15px;
     text-align: center;
+    overflow-y: auto;
 }
-.logo {
-    margin-right: 5px;
-    margin-top: 10px;
-}
-.nombreClinica, .logo {
-    display: inline-block;
-}
+
 #vistaTurnos {
     background-color: #52768B;
-    border-radius: 12PX;
-    height: 85VH;
-    margin:10px;
+    border-radius: 12px;
+    height: 85vh;
+    margin: 10px;
     padding: 15px;
     color: white;
+}
+
+.turno-proceso-codigo {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.turno-proceso-info {
+    font-family: 'JetBrains Mono', monospace;
+    text-align: left;
+    margin-left: 20px;
+}
+
+.turno-proceso-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.turno-proceso-buttons button {
+    width: 80%;
+    margin-bottom: 10px;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .contenedor {
+        flex-direction: column;
+        height: auto;
+    }
+
+    #vistaTurnosEnProceso, #vistaTurnosEnEspera {
+        width: 100%;
+        margin: 5px 0;
+        height: auto;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .consultorio-titulo {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 5px;
+    }
+
+    .logo {
+        height: 40px;
+    }
+
+    .nombreClinica, .consultorio-titulo {
+        font-size: 18px;
+    }
+
+    .dialog-content {
+        width: 90%;
+    }
+
+    .turno-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .turno-codigo {
+        font-size: 20px;
+    }
+
+    .button-container {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .aceptar-button, .retornar-button, .finalizar-button {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    .turno-proceso-codigo {
+        font-size: 28px;
+    }
+
+    .turno-proceso-info {
+        margin-left: 10px;
+    }
+
+    .turno-proceso-buttons button {
+        width: 90%;
+    }
 }

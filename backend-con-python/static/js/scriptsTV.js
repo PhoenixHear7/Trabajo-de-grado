@@ -21,9 +21,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 turnosProceso.forEach(turno => {
                     const turnoElement = document.createElement("li");
                     turnoElement.innerHTML = `
-                        <strong>Mascota:</strong> ${turno.nombre_mascota} <br>
-                        <strong>Servicio:</strong> ${turno.servicio} <br>
-                        <strong>Veterinario:</strong> ${turno.nombre_veterinario || 'N/A'}
+                        <div class="turno-codigo">${turno.codigo}</div>
+                        <div class="turno-detalles">
+                            <strong></strong> ${turno.nombre_mascota} <br>
+                            <strong></strong> ${turno.servicio} <br>
+                            <strong>Dr. </strong> ${turno.nombre_veterinario || 'N/A'} <br>
+                        </div>
+                        <div class="turno-consultorio"><strong></strong> Consultorio ${turno.modulo}</div>
+
                     `;
                     listaTurnosEnProceso.appendChild(turnoElement);
                 });

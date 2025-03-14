@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const crearVeterinarioButton = document.getElementById("crearVeterinario");
     const listaVeterinarios = document.getElementById("listaVeterinarios");
 
-    const audioMv = new Audio('static/audio/mv.mp3'); // Notificación sonora para creación de turno
 
     if (!mascotaInput || !codigoMascotaInput || !servicioInput  || !crearButton || !emergencyButton || !listaTurnos || !settingsButton || !modal || !modalIframe || !closeModal) {
         console.error("Error: No se encontraron todos los elementos necesarios en el DOM.");
@@ -61,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 const result = await response.json();
                 alert("Turno registrado exitosamente");
-                audioMv.play(); // Reproducir sonido de notificación
+                
                 limpiarInputs();
                 actualizarListaTurnos();
             } else {

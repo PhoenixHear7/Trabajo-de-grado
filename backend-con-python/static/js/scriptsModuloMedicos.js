@@ -5,8 +5,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const consultorioDialog = document.getElementById("consultorioDialog");
     const consultorioSelect = document.getElementById("consultorioSelect");
     const consultorioConfirmButton = document.getElementById("consultorioConfirmButton");
+    const veterinarioDialog = document.getElementById("veterinarioDialog");
+    const veterinarioSelect = document.getElementById("veterinarioSelect");
+    const veterinarioConfirmButton = document.getElementById("veterinarioConfirmButton");
+    const alertContainer = document.getElementById("alertContainer");
+    const consultorioTitulo = document.getElementById("consultorioTitulo");
 
     let consultorioId = null;
+    let turnoSeleccionado = null;
     const audioTv = new Audio('static/audio/mv.mp3'); // Notificación sonora para cambio de estado a 'proceso'
 
     // Mostrar cuadro de diálogo para seleccionar el consultorio
@@ -21,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Consultorio inválido. Por favor, seleccione un número entre 1 y 8.");
         } else {
             consultorioId = consultorioNum;
+            consultorioTitulo.textContent = `Consultorio ${consultorioId}`;
             consultorioDialog.style.display = "none";
             cargarTurnos();
         }
@@ -38,10 +45,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 const turnoElement = document.createElement("li");
                 turnoElement.classList.add("turno-item");
                 turnoElement.innerHTML = `
-                    <strong>Mascota:</strong> ${turno.nombre_mascota} <br>
-                    <strong>Servicio:</strong> ${turno.servicio} <br>
-                    <strong>Veterinario:</strong> ${turno.nombre_veterinario || 'N/A'} <br>
-                    <strong>Estado:</strong> <span class="turno-estado">${turno.estado}</span> <br>
+                    <div class="turno-codigo">${turno.codigo}</div>
+                    <div class="turno-info">
+                        <div><strong></strong> ${turno.nombre_mascota}</div>
+                        <div><strong></strong> ${turno.servicio}</div>
+                        <div><strong>Cód. </strong> ${turno.codigo_mascota}</div>
+                        <div><strong>Dr. </strong> <span class="turno-veterinario">${turno.nombre_veterinario || 'No asignado'}</span></div>
+                    </div>
                     <div class="button-container">
                         ${turno.estado === 'espera' ? `
                             <button class="aceptar-button">Aceptar</button>
@@ -56,24 +66,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     listaTurnosEnEspera.appendChild(turnoElement);
 
                     turnoElement.querySelector(".aceptar-button").addEventListener("click", async function () {
-                        try {
-                            const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, {
-                                method: "PUT",
-                                headers: {
-                                    "Content-Type": "application/json"
-                                },
-                                body: JSON.stringify({ estado: 'proceso', modulo: consultorioId })
-                            });
-
-                            if (response.ok) {
-                                audioTv.play(); // Reproducir sonido de notificación
-                                cargarTurnos();
-                            } else {
-                                const error = await response.json();
-                                alert("Error al aceptar el turno: " + error.error);
-                            }
-                        } catch (error) {
-                            console.error("Error al aceptar el turno:", error);
+                        if (turno.nombre_veterinario) {
+                            aceptarTurno(turno);
+                        } else {
+                            turnoSeleccionado = turno;
+                            mostrarDialogoVeterinario();
                         }
                     });
                 } else if (turno.estado === 'proceso' && turno.modulo == consultorioId) {
@@ -127,6 +124,70 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             console.error("Error al cargar los turnos:", error);
         }
+    }
+
+    async function mostrarDialogoVeterinario() {
+        try {
+            const response = await fetch("http://192.168.10.22:5000/veterinarios");
+            const veterinarios = await response.json();
+
+            veterinarioSelect.innerHTML = '<option value="" disabled selected>Seleccione un veterinario</option>';
+            veterinarios.forEach(veterinario => {
+                const option = document.createElement("option");
+                option.value = veterinario.id;
+                option.textContent = veterinario.nombre;
+                veterinarioSelect.appendChild(option);
+            });
+
+            veterinarioDialog.style.display = "flex";
+        } catch (error) {
+            console.error("Error al cargar los veterinarios:", error);
+        }
+    }
+
+    veterinarioConfirmButton.addEventListener("click", async function () {
+        const veterinarioId = parseInt(veterinarioSelect.value);
+
+        if (isNaN(veterinarioId)) {
+            alert("Veterinario inválido. Por favor, seleccione un veterinario.");
+        } else {
+            turnoSeleccionado.veterinario_id = veterinarioId;
+            veterinarioDialog.style.display = "none";
+            aceptarTurno(turnoSeleccionado);
+        }
+    });
+
+    async function aceptarTurno(turno) {
+        try {
+            const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ estado: 'proceso', modulo: consultorioId, veterinario_id: turno.veterinario_id })
+            });
+
+            if (response.ok) {
+                audioTv.play(); // Reproducir sonido de notificación
+                cargarTurnos();
+            } else {
+                const error = await response.json();
+                alert("Error al aceptar el turno: " + error.error);
+            }
+        } catch (error) {
+            console.error("Error al aceptar el turno:", error);
+        }
+    }
+
+    function mostrarAlerta(mensaje) {
+        const alertElement = document.createElement("div");
+        alertElement.classList.add("alert");
+        alertElement.textContent = mensaje;
+        alertContainer.appendChild(alertElement);
+
+        setTimeout(() => {
+            alertElement.remove();
+        }, 5000);
     }
 
     // Mostrar el cuadro de diálogo para seleccionar el consultorio al cargar la página

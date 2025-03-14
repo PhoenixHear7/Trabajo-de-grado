@@ -139,6 +139,7 @@ def actualizar_turno(turno_id):
         data = request.get_json()
         estado = data.get("estado")
         modulo = data.get("modulo")
+        veterinario_id = data.get("veterinario_id")
 
         if estado not in ["espera", "proceso", "finalizado"]:
             return jsonify({"error": "Estado inválido"}), 400
@@ -147,8 +148,8 @@ def actualizar_turno(turno_id):
         cur = conn.cursor()
 
         cur.execute(
-            "UPDATE turnos SET estado = %s, modulo = %s WHERE id = %s",
-            (estado, modulo, turno_id)
+            "UPDATE turnos SET estado = %s, modulo = %s, veterinario_id = %s WHERE id = %s",
+            (estado, modulo, veterinario_id, turno_id)
         )
         conn.commit()
         cur.close()

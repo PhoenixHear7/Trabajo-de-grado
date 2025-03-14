@@ -1,4 +1,7 @@
 /* tv.css */
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Montserrat:wght@700&display=swap');
+
 
 /* Estilos generales */
 body {
@@ -37,11 +40,11 @@ body {
 /* Contenedor principal */
 .container {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: flex-start;
-    width: 90%;
-    max-width: 1200px;
-    margin-top: 20px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 /* Sección de turnos */
@@ -50,7 +53,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 50%;
+    width: 48%;
     text-align: center;
 }
 
@@ -69,7 +72,32 @@ body {
     padding: 10px;
     margin: 5px 0;
     border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+.turno-codigo, .turno-consultorio {
+    font-size: 1.5em;
+    font-weight: 700; /* Extra negrita */
+    color: #678896;
+    flex: 1;
+    text-align: left;
+    font-family: 'Poppins', sans-serif; /* Puedes cambiar a 'Montserrat' si prefieres */
+}
+
+.turno-consultorio {
+    text-align: right;
+}
+.turno-detalles {
+    font-size: 1.2em;
+    flex: 2;
+    text-align: left;
+    margin-left: 10px;
+    font-family: 'Itim', cursive;
+}
+
+
 
 /* Video */
 video {
