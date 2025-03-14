@@ -90,14 +90,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 const turnoElement = document.createElement("div");
                 turnoElement.classList.add("turno-item");
                 turnoElement.innerHTML = `
-                    <strong>Código:</strong> <span style="color: red;">${turno.codigo}</span><br>
-                    <strong>Mascota:</strong> ${turno.nombre_mascota} <br>
-                    <strong>Servicio:</strong> ${turno.servicio} <br>
-                    <strong>Veterinario:</strong> ${turno.nombre_veterinario || 'N/A'} <br>
-                    <strong>Estado:</strong> <span class="turno-estado">${turno.estado}</span> <br>
-                    <div class="button-container">
-                        <button class="delete-button">Eliminar</button>
+                    <span class="codigo">${turno.codigo}</span>
+                    <div class="detalles">
+                        <strong>${turno.nombre_mascota}</strong>
+                        <span>${turno.servicio},</span>
+                        <span>cod. ${turno.codigo_mascota}, </span>
+                        ${turno.nombre_veterinario ? `<span>   ${turno.nombre_veterinario}</span>` : '<span>Sin veterinario asignado</span>'}
+                        ${turno.estado === 'proceso' ? `<span>Consultorio: ${turno.modulo}</span>` : ''}
                     </div>
+                    <button class="delete-button">Eliminar</button>
                 `;
 
                 turnoElement.querySelector(".delete-button").addEventListener("click", async () => {

@@ -1,6 +1,6 @@
 /* Estilos generales */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif; /* Cambiar la tipografía a Roboto */
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -12,7 +12,7 @@ body {
     padding: 10px;
     text-align: center;
     border: 2px solid #ccc;
-    font-size: 20px;
+    font-size: 24px; /* Aumentar el tamaño de la fuente */
     font-weight: bold;
     border-radius: 10px;
     margin: 20px auto;
@@ -29,7 +29,7 @@ body {
 }
 
 .logo-container img {
-    max-width: 120px; /* Aumentar el tamaño del logo */
+    max-width: 150px; /* Aumentar el tamaño del logo */
     height: auto;
     margin-left: 20px;
 }
@@ -89,12 +89,14 @@ body {
 /* Estilos de etiquetas e inputs */
 .appointment-form h2 {
     text-align: center;
+    font-family: 'Roboto', sans-serif; /* Cambiar la tipografía a Roboto */
 }
 
 .appointment-form label {
     display: block;
     margin-top: 10px;
     font-weight: bold;
+    font-family: 'Roboto', sans-serif; /* Cambiar la tipografía a Roboto */
 }
 
 /* Contenedor de botones */
@@ -148,7 +150,7 @@ body {
 }
 
 .logo-container img {
-    max-width: 120px; /* Aumentar el tamaño del logo */
+    max-width: 150px; /* Aumentar el tamaño del logo */
     height: auto;
     margin-left: 20px;
 }
@@ -166,6 +168,7 @@ body {
 /* Título de Turnos Activos */
 .appointments-section h2 {
     text-align: center;
+    font-family: 'Roboto', sans-serif; /* Cambiar la tipografía a Roboto */
 }
 
 /* Contenedor de la lista de turnos */
@@ -184,50 +187,42 @@ body {
     margin-top: 10px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 18px;
 }
 
-/* Botón para eliminar turnos */
-.delete-button {
+.turno-item .codigo {
+    font-size: 24px; /* Tamaño de letra grande */
+    color: white; /* Color blanco */
+    font-weight: bold;
+}
+
+.turno-item .detalles {
+    flex: 1;
+    margin-left: 20px;
+    color: black; /* Color negro */
+    font-family: 'Itim', cursive; /* Tipografía Itim */
+}
+
+.turno-item .detalles strong {
+    display: block;
+}
+
+.turno-item .delete-button {
     background-color: red;
     color: white;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-    margin-top: 5px;
     border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
-.delete-button:hover {
+.turno-item .delete-button:hover {
     background-color: #a71d2a;
-}
-
-/* Contenedor de los botones dentro de cada turno */
-.button-container {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-/* Ajuste de los botones para que se vean bien alineados */
-.edit-button, .delete-button {
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-/* Estilos del botón Editar */
-.edit-button {
-    background-color: #007bff;
-    color: white;
-}
-
-.edit-button:hover {
-    background-color: #0056b3;
 }
 
 /* Estilos del modal */

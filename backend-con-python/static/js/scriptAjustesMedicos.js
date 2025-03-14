@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         try {
-            const response = await fetch("http://192.168.10.22:5000/veterinarios", {
+            const response = await fetch("http://127.0.0.1:5000/veterinarios", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -45,14 +45,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function cargarVeterinarios() {
         try {
-            const response = await fetch("http://192.168.10.22:5000/veterinarios");
+            const response = await fetch("http://127.0.0.1:5000/veterinarios");
             const veterinarios = await response.json();
             listaVeterinarios.innerHTML = "";
 
             veterinarios.forEach(vet => {
                 const vetElement = document.createElement("li");
-                vetElement.textContent = `${vet.nombre} ${vet.apellido} - ${vet.rol}`;
+                vetElement.innerHTML = `
+                    ${vet.nombre} - ${vet.rol}
+                    <button class="delete-button" data-id="${vet.id}">Eliminar</button>
+                `;
                 listaVeterinarios.appendChild(vetElement);
+
+                vetElement.querySelector(".delete-button").addEventListener("click", async () => {
+                    try {
+                        const response = await fetch(`http://127.0.0.1:5000/veterinarios/${vet.id}`, { method: "DELETE" });
+                        if (response.ok) {
+                            alert("Veterinario eliminado exitosamente");
+                            cargarVeterinarios();
+                        } else {
+                            const error = await response.json();
+                            alert("Error al eliminar el veterinario: " + error.error);
+                        }
+                    } catch (error) {
+                        console.error("Error al eliminar el veterinario:", error);
+                    }
+                });
             });
         } catch (error) {
             console.error("Error al cargar los veterinarios:", error);

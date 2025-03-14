@@ -80,6 +80,7 @@ def registrar_turno():
             "fecha": nuevo_turno["fecha"],
             "mascota_id": nuevo_turno["mascota_id"],  
             "veterinario_id": nuevo_turno["veterinario_id"],
+            "codigo_mascota": codigo_mascota  # Incluir el código de la mascota
         }
 
         return jsonify({"message": "Turno registrado", "turno": turno_dict}), 201
@@ -93,7 +94,7 @@ def obtener_turnos():
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("""
-            SELECT t.id, t.codigo, t.servicio, t.estado, t.fecha, t.veterinario_id, t.modulo, m.nombre AS nombre_mascota, v.nombre AS nombre_veterinario
+            SELECT t.id, t.codigo, t.servicio, t.estado, t.fecha, t.veterinario_id, t.modulo, m.nombre AS nombre_mascota, m.id AS codigo_mascota, v.nombre AS nombre_veterinario
             FROM turnos t
             LEFT JOIN mascotas m ON t.mascota_id = m.id
             LEFT JOIN veterinarios v ON t.veterinario_id = v.id
@@ -113,7 +114,8 @@ def obtener_turnos():
                 "veterinario_id": turno["veterinario_id"],
                 "modulo": turno["modulo"],
                 "nombre_mascota": turno["nombre_mascota"],
-                "nombre_veterinario": turno["nombre_veterinario"]
+                "nombre_veterinario": turno["nombre_veterinario"],
+                "codigo_mascota": turno["codigo_mascota"]  # Incluir el código de la mascota
             })
 
         return jsonify(turnos)

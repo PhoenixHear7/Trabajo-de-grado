@@ -4,33 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajustes Médicos</title>
-    <link rel="stylesheet" href="Styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f9f9f9;
-        }
-        #veterinarios, #registro, #ListaDeVeterinarios {
-            margin-bottom: 15px;
-        }
-        input {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 8px;
-        }
-        button {
-            padding: 10px;
-            background: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesAjustemedicos.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Letrero de veterinarios -->
@@ -38,21 +13,23 @@
         <h1>Veterinarios</h1>
     </div>
 
-    <!-- Campos para registro -->
-    <div id="registro">
-        <label for="nombreVeterinario"></label>
-        <input id="nombreVeterinario" type="text" required placeholder="Ingrese Nombre">
-        <label for="apellidoVeterinario"></label>
-        <input id="apellidoVeterinario" type="text" required placeholder="Ingrese Apellido">
-        <label for="rol"></label>
-        <input id="rol" type="text" required placeholder="Ingrese Rol">
-        <button id="crearVeterinario">CREAR</button>
-    </div>
+    <!-- Contenedor principal -->
+    <div id="main-container">
+        <!-- Campos para registro -->
+        <div id="registro">
+            <label for="nombreVeterinario"></label>
+            <input id="nombreVeterinario" type="text" required placeholder="Ingrese Nombre">
+            <label for="apellidoVeterinario"></label>
+            <input id="apellidoVeterinario" type="text" required placeholder="Ingrese Apellido">
+            <label for="rol"></label>
+            <input id="rol" type="text" required placeholder="Ingrese Rol">
+            <button id="crearVeterinario">CREAR</button>
+        </div>
 
-    <!-- Lista de veterinarios -->
-    <div id="ListaDeVeterinarios">
-        <h2>Veterinarios Registrados</h2>
-        <ul id="listaVeterinarios"></ul>
+        <!-- Lista de veterinarios -->
+        <div id="ListaDeVeterinarios">
+            <ul id="listaVeterinarios"></ul>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/scriptAjustesMedicos.js') }}"></script>
