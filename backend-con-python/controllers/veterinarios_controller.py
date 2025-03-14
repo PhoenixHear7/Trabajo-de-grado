@@ -1,24 +1,74 @@
 from db import get_db_connection
-from flask import jsonify
+from flask import jsonify, request
 
 def obtener_veterinarios():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM veterinarios")
-    veterinarios = cur.fetchall()
-    cur.close()
-    conn.close()
-    return jsonify(veterinarios)
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT id, nombre FROM veterinarios")
+        veterinarios_data = cur.fetchall()
+        cur.close()
+        conn.close()
+
+        veterinarios = []
+        for veterinario in veterinarios_data:
+            veterinarios.append({
+                "id": veterinario["id"],
+                "nombre": veterinario["nombre"]
+            })
+
+        return jsonify(veterinarios)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 def registrar_veterinarios():
     try:
         data = request.get_json()
+        nombre = data.get("nombre")
+
+        if not nombre:
+            return jsonify({"error": "Faltan datos obligatorios"}), 400
+
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("INSERT * FROM veterinarios")
-        veterinarios = cur.fetchall()
+        cur.execute("INSERT INTO veterinarios (nombre) VALUES (%s) RETURNING id, nombre", (nombre,))
+        nuevo_veterinario = cur.fetchone()
+        conn.commit()
         cur.close()
         conn.close()
-        return jsonify(veterinarios)
+
+        return jsonify({"message": "Veterinario registrado", "veterinario": nuevo_veterinario}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def actualizar_veterinario(veterinario_id):
+    try:
+        data = request.get_json()
+        nombre = data.get("nombre")
+
+        if not nombre:
+            return jsonify({"error": "Faltan datos obligatorios"}), 400
+
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("UPDATE veterinarios SET nombre = %s WHERE id = %s RETURNING id, nombre", (nombre, veterinario_id))
+        veterinario_actualizado = cur.fetchone()
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return jsonify({"message": "Veterinario actualizado", "veterinario": veterinario_actualizado}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def eliminar_veterinario(veterinario_id):
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM veterinarios WHERE id = %s", (veterinario_id,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"message": "Veterinario eliminado"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

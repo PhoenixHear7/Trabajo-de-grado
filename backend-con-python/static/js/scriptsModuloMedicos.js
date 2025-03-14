@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const consultorioConfirmButton = document.getElementById("consultorioConfirmButton");
 
     let consultorioId = null;
+    const audioTv = new Audio('static/audio/mv.mp3'); // Notificación sonora para cambio de estado a 'proceso'
 
     // Mostrar cuadro de diálogo para seleccionar el consultorio
     function seleccionarConsultorio() {
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function cargarTurnos() {
         try {
-            const response = await fetch("http://127.0.0.1:5000/turnos");
+            const response = await fetch("http://192.168.10.22:5000/turnos");
             const turnos = await response.json();
 
             listaTurnosEnEspera.innerHTML = "";
@@ -56,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     turnoElement.querySelector(".aceptar-button").addEventListener("click", async function () {
                         try {
-                            const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, {
+                            const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type": "application/json"
@@ -65,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             });
 
                             if (response.ok) {
+                                audioTv.play(); // Reproducir sonido de notificación
                                 cargarTurnos();
                             } else {
                                 const error = await response.json();
@@ -79,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     turnoElement.querySelector(".retornar-button").addEventListener("click", async function () {
                         try {
-                            const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, {
+                            const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type": "application/json"
@@ -100,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     turnoElement.querySelector(".finalizar-button").addEventListener("click", async function () {
                         try {
-                            const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, {
+                            const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type": "application/json"

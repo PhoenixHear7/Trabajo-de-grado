@@ -16,13 +16,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const crearVeterinarioButton = document.getElementById("crearVeterinario");
     const listaVeterinarios = document.getElementById("listaVeterinarios");
 
+    const audioMv = new Audio('static/audio/mv.mp3'); // Notificación sonora para creación de turno
+
     if (!mascotaInput || !codigoMascotaInput || !servicioInput  || !crearButton || !emergencyButton || !listaTurnos || !settingsButton || !modal || !modalIframe || !closeModal) {
         console.error("Error: No se encontraron todos los elementos necesarios en el DOM.");
         return;
     }
 
     settingsButton.addEventListener("click", () => {
-        modalIframe.src = "ajusteMedicos.html";
+        modalIframe.src = "/ajusteMedicos";
         modal.style.display = "flex";
     });
 
@@ -48,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/turnos/", {
+            const response = await fetch("http://192.168.10.22:5000/turnos/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -59,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 const result = await response.json();
                 alert("Turno registrado exitosamente");
+                audioMv.play(); // Reproducir sonido de notificación
                 limpiarInputs();
                 actualizarListaTurnos();
             } else {
@@ -79,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function actualizarListaTurnos() {
         try {
-            const response = await fetch("http://127.0.0.1:5000/turnos/");
+            const response = await fetch("http://192.168.10.22:5000/turnos/");
             const turnos = await response.json();
             listaTurnos.innerHTML = "";
 
@@ -99,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 turnoElement.querySelector(".delete-button").addEventListener("click", async () => {
                     try {
-                        const response = await fetch(`http://127.0.0.1:5000/turnos/${turno.id}`, { method: "DELETE" });
+                        const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, { method: "DELETE" });
                         if (response.ok) {
                             turnoElement.remove();
                             alert("Turno eliminado exitosamente");
@@ -121,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function cargarVeterinarios() {
         try {
-            const response = await fetch("http://127.0.0.1:5000/veterinarios");
+            const response = await fetch("http://192.168.10.22:5000/veterinarios");
             const veterinarios = await response.json();
             veterinarioSelect.innerHTML = '<option value="">Seleccione un veterinario</option>';
             veterinarios.forEach(vet => {

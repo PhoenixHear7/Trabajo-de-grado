@@ -30,12 +30,9 @@
         button:hover {
             background: #0056b3;
         }
-
     </style>
 </head>
 <body>
-
-
     <!-- Letrero de veterinarios -->
     <div id="veterinarios">
         <h1>Veterinarios</h1>
@@ -58,7 +55,7 @@
         <ul id="listaVeterinarios"></ul>
     </div>
 
-    <script src="scriptAjustesMedicos.js"></script>
+    <script src="{{ url_for('static', filename='js/scriptAjustesMedicos.js') }}"></script>
 </body>
 </html>
 
