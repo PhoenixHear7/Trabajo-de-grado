@@ -2,7 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Montserrat:wght@700&display=swap');
 
-
 /* Estilos generales */
 body {
     font-family: Arial, sans-serif;
@@ -77,8 +76,8 @@ body {
     align-items: center;
 }
 
-.turno-codigo, .turno-consultorio {
-    font-size: 1.5em;
+.turno-codigo {
+    font-size: 3em;
     font-weight: 700; /* Extra negrita */
     color: #678896;
     flex: 1;
@@ -86,18 +85,24 @@ body {
     font-family: 'Poppins', sans-serif; /* Puedes cambiar a 'Montserrat' si prefieres */
 }
 
-.turno-consultorio {
-    text-align: right;
-}
 .turno-detalles {
-    font-size: 1.2em;
+    font-size: 1.5em;
     flex: 2;
     text-align: left;
     margin-left: 10px;
     font-family: 'Itim', cursive;
 }
 
-
+.turno-consultorio {
+    font-size: 3em;
+    font-weight: 700; /* Extra negrita */
+    color: #678896;
+    flex: 1;
+    text-align: right;
+    font-family: 'Poppins', sans-serif; /* Puedes cambiar a 'Montserrat' si prefieres */
+    white-space: nowrap; /* Evita que el texto se desborde */
+    margin-left: -20px; /* Mueve el elemento un poco más a la izquierda */
+}
 
 /* Video */
 video {

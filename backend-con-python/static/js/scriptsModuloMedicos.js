@@ -13,7 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let consultorioId = null;
     let turnoSeleccionado = null;
-    const audioTv = new Audio('static/audio/mv.mp3'); // Notificación sonora para cambio de estado a 'proceso'
+    const audioTv = new Audio('static/audio/mv.mp3'); // Notificación sonora para nuevo turno
+    let turnosPrevios = [];
 
     // Mostrar cuadro de diálogo para seleccionar el consultorio
     function seleccionarConsultorio() {
@@ -30,16 +31,24 @@ document.addEventListener("DOMContentLoaded", function () {
             consultorioTitulo.textContent = `Consultorio ${consultorioId}`;
             consultorioDialog.style.display = "none";
             cargarTurnos();
+            setInterval(cargarTurnos, 5000); // Revisar cada 5 segundos si hay nuevos turnos
         }
     });
 
     async function cargarTurnos() {
         try {
-            const response = await fetch("http://192.168.10.22:5000/turnos");
+            const response = await fetch("http://192.168.10.30:5000/turnos");
             const turnos = await response.json();
 
             listaTurnosEnEspera.innerHTML = "";
             listaTurnosEnProceso.innerHTML = "";
+
+            // Ordenar turnos: Emergencia primero, luego por fecha (más antiguos primero)
+            turnos.sort((a, b) => {
+                if (a.servicio === 'emergencia' && b.servicio !== 'emergencia') return -1;
+                if (a.servicio !== 'emergencia' && b.servicio === 'emergencia') return 1;
+                return new Date(a.fecha) - new Date(b.fecha);
+            });
 
             turnos.forEach(turno => {
                 const turnoElement = document.createElement("li");
@@ -78,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     turnoElement.querySelector(".retornar-button").addEventListener("click", async function () {
                         try {
-                            const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, {
+                            const response = await fetch(`http://192.168.10.30:5000/turnos/${turno.id}`, {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type": "application/json"
@@ -88,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                             if (response.ok) {
                                 cargarTurnos();
+                                audioTv.play(); // Reproducir sonido de notificación para turno retornado
                             } else {
                                 const error = await response.json();
                                 alert("Error al retornar el turno: " + error.error);
@@ -99,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     turnoElement.querySelector(".finalizar-button").addEventListener("click", async function () {
                         try {
-                            const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, {
+                            const response = await fetch(`http://192.168.10.30:5000/turnos/${turno.id}`, {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type": "application/json"
@@ -120,6 +130,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
 
+            // Comparar turnos actuales con los previos para detectar nuevos turnos
+            const nuevosTurnos = turnos.filter(turno => 
+                !turnosPrevios.some(prevTurno => prevTurno.id === turno.id)
+            );
+
+            if (nuevosTurnos.length > 0) {
+                audioTv.play(); // Reproducir sonido de notificación para nuevos turnos
+            }
+
+            // Actualizar el estado de turnos previos
+            turnosPrevios = turnos;
+
             muestra.style.display = listaTurnosEnProceso.children.length === 0 ? 'block' : 'none';
         } catch (error) {
             console.error("Error al cargar los turnos:", error);
@@ -128,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function mostrarDialogoVeterinario() {
         try {
-            const response = await fetch("http://192.168.10.22:5000/veterinarios");
+            const response = await fetch("http://192.168.10.30:5000/veterinarios");
             const veterinarios = await response.json();
 
             veterinarioSelect.innerHTML = '<option value="" disabled selected>Seleccione un veterinario</option>';
@@ -159,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function aceptarTurno(turno) {
         try {
-            const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, {
+            const response = await fetch(`http://192.168.10.30:5000/turnos/${turno.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -168,7 +190,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (response.ok) {
-                audioTv.play(); // Reproducir sonido de notificación
                 cargarTurnos();
             } else {
                 const error = await response.json();

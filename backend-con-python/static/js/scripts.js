@@ -4,20 +4,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const servicioInput = document.getElementById("servicio");
     const veterinarioSelect = document.getElementById("veterinario");
     const crearButton = document.getElementById("crearTurno");
-    const emergencyButton = document.getElementById("emergencyButton");
     const listaTurnos = document.getElementById("listaTurnos");
     const settingsButton = document.getElementById("settings-button");
     const modal = document.getElementById("myModal");
     const modalIframe = document.getElementById("modal-iframe");
     const closeModal = document.querySelector(".close");
-    const nombreVeterinarioInput = document.getElementById("nombreVeterinario");
-    const apellidoVeterinarioInput = document.getElementById("apellidoVeterinario");
-    const rolInput = document.getElementById("rol");
-    const crearVeterinarioButton = document.getElementById("crearVeterinario");
-    const listaVeterinarios = document.getElementById("listaVeterinarios");
 
-
-    if (!mascotaInput || !codigoMascotaInput || !servicioInput  || !crearButton || !emergencyButton || !listaTurnos || !settingsButton || !modal || !modalIframe || !closeModal) {
+    if (!mascotaInput || !codigoMascotaInput || !servicioInput  || !crearButton || !listaTurnos || !settingsButton || !modal || !modalIframe || !closeModal) {
         console.error("Error: No se encontraron todos los elementos necesarios en el DOM.");
         return;
     }
@@ -30,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
     closeModal.addEventListener("click", () => modal.style.display = "none");
     window.addEventListener("click", (event) => { if (event.target == modal) modal.style.display = "none"; });
 
-    async function crearTurno(esEmergencia = false) {
+    async function crearTurno() {
         const codigo_mascota = codigoMascotaInput.value.trim();
         const nombre_mascota = mascotaInput.value.trim();
         const servicio = servicioInput.value;
@@ -49,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         try {
-            const response = await fetch("http://192.168.10.22:5000/turnos/", {
+            const response = await fetch("http://192.168.10.30:5000/turnos/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -81,9 +74,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function actualizarListaTurnos() {
         try {
-            const response = await fetch("http://192.168.10.22:5000/turnos/");
+            const response = await fetch("http://192.168.10.30:5000/turnos/");
             const turnos = await response.json();
             listaTurnos.innerHTML = "";
+
+            // Ordenar turnos: Emergencia primero, luego por fecha
+            turnos.sort((a, b) => {
+                if (a.servicio === 'emergencia' && b.servicio !== 'emergencia') return -1;
+                if (a.servicio !== 'emergencia' && b.servicio === 'emergencia') return 1;
+                return new Date(a.fecha) - new Date(b.fecha);
+            });
 
             turnos.forEach(turno => {
                 const turnoElement = document.createElement("div");
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 turnoElement.querySelector(".delete-button").addEventListener("click", async () => {
                     try {
-                        const response = await fetch(`http://192.168.10.22:5000/turnos/${turno.id}`, { method: "DELETE" });
+                        const response = await fetch(`http://192.168.10.30:5000/turnos/${turno.id}`, { method: "DELETE" });
                         if (response.ok) {
                             turnoElement.remove();
                             alert("Turno eliminado exitosamente");
@@ -124,13 +124,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function cargarVeterinarios() {
         try {
-            const response = await fetch("http://192.168.10.22:5000/veterinarios");
+            const response = await fetch("http://192.168.10.30:5000/veterinarios");
             const veterinarios = await response.json();
             veterinarioSelect.innerHTML = '<option value="">Seleccione un veterinario</option>';
             veterinarios.forEach(vet => {
                 const option = document.createElement("option");
                 option.value = vet.id;
-                option.textContent = `${vet.nombre} `;
+                option.textContent = ` Dr. ${vet.nombre} `;
                 veterinarioSelect.appendChild(option);
             });
         } catch (error) {
@@ -138,8 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    crearButton.addEventListener("click", () => crearTurno(false));
-    emergencyButton.addEventListener("click", () => { servicioInput.value = "E"; crearTurno(true); });
+    crearButton.addEventListener("click", crearTurno);
     cargarVeterinarios();
     actualizarListaTurnos();
 });

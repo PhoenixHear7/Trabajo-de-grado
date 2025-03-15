@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/veterinarios", {
+            const response = await fetch("http://192.168.10.30:5000/veterinarios", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function cargarVeterinarios() {
         try {
-            const response = await fetch("http://127.0.0.1:5000/veterinarios");
+            const response = await fetch("http://192.168.10.30:5000/veterinarios");
             const veterinarios = await response.json();
             listaVeterinarios.innerHTML = "";
 

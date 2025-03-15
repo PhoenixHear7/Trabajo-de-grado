@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
     const listaTurnosEnProceso = document.getElementById("listaTurnosEnProceso");
-    const audioTv = new Audio('static/audio/tv.mp3'); // Notificación sonora para cambio de estado a 'proceso'
+    const audioTv = new Audio('static/audio/tv.mp3'); // Notificación sonora para nuevo turno
     let turnosEnProcesoPrevios = [];
 
     async function cargarTurnos() {
         try {
-            const response = await fetch("http://192.168.10.22:5000/turnos");
+            const response = await fetch("http://192.168.10.30:5000/turnos");
             if (!response.ok) throw new Error("Error al obtener los turnos");
 
             const turnos = await response.json();
@@ -28,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             <strong>Dr. </strong> ${turno.nombre_veterinario || 'N/A'} <br>
                         </div>
                         <div class="turno-consultorio"><strong></strong> Consultorio ${turno.modulo}</div>
-
                     `;
                     listaTurnosEnProceso.appendChild(turnoElement);
                 });
