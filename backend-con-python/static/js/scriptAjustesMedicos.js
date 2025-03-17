@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         try {
-            const response = await fetch("http://192.168.10.30:5000/veterinarios", {
+            const response = await fetch(`http://192.168.10.30:5000/veterinarios`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -45,7 +45,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function cargarVeterinarios() {
         try {
-            const response = await fetch("http://192.168.10.30:5000/veterinarios");
+            const response = await fetch(`http://192.168.10.30:5000/veterinarios`);
+            if (!response.ok) {
+                throw new Error("Error al cargar los veterinarios");
+            }
             const veterinarios = await response.json();
             listaVeterinarios.innerHTML = "";
 
@@ -59,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 vetElement.querySelector(".delete-button").addEventListener("click", async () => {
                     try {
-                        const response = await fetch(`http://127.0.0.1:5000/veterinarios/${vet.id}`, { method: "DELETE" });
+                        const response = await fetch(`http://192.168.10.30:5000/veterinarios/${vet.id}`, { method: "DELETE" });
                         if (response.ok) {
                             alert("Veterinario eliminado exitosamente");
                             cargarVeterinarios();

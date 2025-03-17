@@ -38,10 +38,10 @@ def registrar_turno():
             id_mascota = cur.fetchone()["id"]
             print("Nueva mascota registrada:", id_mascota)  # Depuración
 
-        # Obtener último turno del día para el servicio
+        # Obtener último turno del día
         cur.execute(
-            "SELECT codigo FROM turnos WHERE servicio = %s AND fecha = %s ORDER BY id DESC LIMIT 1",
-            (servicio, fecha)
+            "SELECT codigo FROM turnos WHERE fecha = %s ORDER BY id DESC LIMIT 1",
+            (fecha,)
         )
         last_turno = cur.fetchone()
         print("Último turno obtenido:", last_turno)  # Depuración
@@ -55,10 +55,7 @@ def registrar_turno():
             numero = 1
 
         # Generar el código según el servicio
-        if servicio == "control":
-            codigo = "CL" + str(numero).zfill(2)
-        else:
-            codigo = servicio[0].upper() + str(numero).zfill(2)
+        codigo = servicio[0].upper() + str(numero).zfill(2)
 
         # Insertar el nuevo turno
         cur.execute(

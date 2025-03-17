@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         try {
-            const response = await fetch("http://192.168.10.30:5000/turnos/", {
+            const response = await fetch(`http://192.168.10.30:5000/turnos/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function actualizarListaTurnos() {
         try {
-            const response = await fetch("http://192.168.10.30:5000/turnos/");
+            const response = await fetch(`http://192.168.10.30:5000/turnos/`);
             const turnos = await response.json();
             listaTurnos.innerHTML = "";
 
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function cargarVeterinarios() {
         try {
-            const response = await fetch("http://192.168.10.30:5000/veterinarios");
+            const response = await fetch(`http://192.168.10.30:5000/veterinarios`);
             const veterinarios = await response.json();
             veterinarioSelect.innerHTML = '<option value="">Seleccione un veterinario</option>';
             veterinarios.forEach(vet => {

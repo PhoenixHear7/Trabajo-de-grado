@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     const listaTurnosEnProceso = document.getElementById("listaTurnosEnProceso");
+    const videoPublicidad = document.getElementById("videoPublicidad");
     const audioTv = new Audio('static/audio/tv.mp3'); // Notificación sonora para nuevo turno
     let turnosEnProcesoPrevios = [];
 
     async function cargarTurnos() {
         try {
-            const response = await fetch("http://192.168.10.30:5000/turnos");
+            const response = await fetch(`http://192.168.10.30:5000/turnos`);
             if (!response.ok) throw new Error("Error al obtener los turnos");
 
             const turnos = await response.json();
@@ -51,4 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     setInterval(cargarTurnos, 5000);
     cargarTurnos();
+
+    // Asegurar que el video se esté reproduciendo mientras se reciben turnos
+    videoPublicidad.addEventListener('play', function() {
+        setInterval(() => {
+            if (videoPublicidad.paused) {
+                videoPublicidad.play();
+            }
+        }, 1000);
+    });
 });
