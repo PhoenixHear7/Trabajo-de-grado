@@ -1,8 +1,8 @@
 CREATE DATABASE Veterinaria;
 
--- Crear la tabla de mascotas
+-- Crear la tabla de mascotas (id como número de historia clínica)
 CREATE TABLE mascotas (
-    id VARCHAR(20) PRIMARY KEY,  -- Cambiado de id_mascota a id
+    id INTEGER PRIMARY KEY,  -- Número de historia clínica ingresado manualmente
     nombre VARCHAR(100) NOT NULL
 );
 
@@ -15,17 +15,18 @@ CREATE TABLE veterinarios (
 
 -- Crear la tabla de turnos
 CREATE TABLE turnos (
-    id SERIAL PRIMARY KEY,  -- Cambiado de id_turno a id
+    id SERIAL PRIMARY KEY,
     codigo VARCHAR(10) NOT NULL,
-    modulo VARCHAR(50) NULL,  
+    modulo VARCHAR(50),
     servicio VARCHAR(100) NOT NULL,
     estado VARCHAR(20) CHECK (estado IN ('espera', 'proceso', 'finalizado')) DEFAULT 'espera',
-    fecha DATE DEFAULT CURRENT_DATE,  -- Manteniendo formato DATE para coincidir con el código
-    veterinario_id INT NULL,  -- Cambiado de id_veterinario a veterinario_id
-    mascota_id VARCHAR(20) NOT NULL,  -- Cambiado de id_mascota a mascota_id
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    veterinario_id INT,
+    mascota_id INTEGER NOT NULL,  -- Ahora es INTEGER para coincidir con la tabla mascotas
     FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE SET NULL,
     FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE CASCADE
 );
+
 
 --http://192.168.10.30:5000/tv
 --http://192.168.10.30:5000/pantallaPrincipal
