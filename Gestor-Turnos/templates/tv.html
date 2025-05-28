@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turnos en Proceso y Publicidad</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tv.css') }}"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='imagenes/Veterinaria.ico') }}"
+    />
+  </head>
+  <!-- Encabezado principal -->
+  <header class="top-header">
+    <div class="header-content">
+      <h1>Clínica Veterinaria Happy Pet</h1>
+      <div class="logo-container">
+        <img
+          class="logo"
+          src="{{ url_for('static', filename='imagenes/logo.png') }}"
+          alt="Logo de la clínica"
+        />
+      </div>
+    </div>
+  </header>
+  <body>
+    <div class="container">
+      <!-- Sección de turnos en proceso -->
+      <div class="turnos">
+        <h2>Turnos en Proceso</h2>
+        <ul id="listaTurnosEnProceso">
+          <li>No hay turnos en proceso</li>
+        </ul>
+      </div>
+
+      <!-- Sección de publicidad -->
+      <div class="publicidad">
+        <h2>¡Conoce de nosotros!</h2>
+        <video id="videoPlayer" width="800" controls autoplay muted>
+          <source id="videoSource" src="" type="video/mp4" />
+          Tu navegador no soporta el elemento de video.
+        </video>
+      </div>
+    </div>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/scriptsTV.js') }}"
+    ></script>
+  </body>
+</html>
