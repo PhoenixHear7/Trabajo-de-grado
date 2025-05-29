@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
   consultorioConfirmButton.addEventListener("click", function () {
     const consultorioNum = parseInt(consultorioSelect.value);
 
-    if (isNaN(consultorioNum) || consultorioNum < 1 || consultorioNum > 8) {
+    if (isNaN(consultorioNum) || consultorioNum < 101 || consultorioNum > 302) {
       alert(
         "Consultorio inválido. Por favor, seleccione un número entre 1 y 8."
       );
@@ -50,43 +50,40 @@ document.addEventListener("DOMContentLoaded", function () {
       listaTurnosEnEspera.innerHTML = "";
       listaTurnosEnProceso.innerHTML = "";
 
-      // Ordenar turnos: Emergencia primero, luego por fecha (más antiguos primero)
+      // Ordenar turnos: Emergencia primero, luego por id ascendente
       turnos.sort((a, b) => {
         if (a.servicio === "emergencia" && b.servicio !== "emergencia")
           return -1;
         if (a.servicio !== "emergencia" && b.servicio === "emergencia")
           return 1;
-        return new Date(a.fecha) - new Date(b.fecha);
+        return a.id - b.id;
       });
 
       turnos.forEach((turno) => {
         const turnoElement = document.createElement("li");
         turnoElement.classList.add("turno-item");
+        if (turno.servicio === "emergencia") {
+          turnoElement.classList.add("turno-emergencia");
+        }
         turnoElement.innerHTML = `
-                    <div class="turno-codigo">${turno.codigo}</div>
-                    <div class="turno-info">
-                        <div><strong></strong> ${turno.nombre_mascota}</div>
-                        <div><strong></strong> ${turno.servicio}</div>
-                        <div><strong>Cód. </strong> ${
-                          turno.codigo_mascota
-                        }</div>
-                        <div><strong>Dr. </strong> <span class="turno-veterinario">${
-                          turno.nombre_veterinario || "No asignado"
-                        }</span></div>
-                    </div>
-                    <div class="button-container">
-                        ${
-                          turno.estado === "espera"
-                            ? `
-                            <button class="aceptar-button">Aceptar</button>
-                        `
-                            : `
-                            <button class="retornar-button">Retornar</button>
-                            <button class="finalizar-button">Finalizar</button>
-                        `
-                        }
-                    </div>
-                `;
+        <div class="turno-codigo">${turno.codigo}</div>
+        <div class="turno-info">
+            <div><strong></strong> ${turno.nombre_mascota}</div>
+            <div><strong></strong> ${turno.servicio}</div>
+            <div><strong>Cód. </strong> ${turno.codigo_mascota}</div>
+            <div><strong>Dr. </strong> <span class="turno-veterinario">${
+              turno.nombre_veterinario || "No asignado"
+            }</span></div>
+        </div>
+        <div class="button-container">
+            ${
+              turno.estado === "espera"
+                ? `<button class="aceptar-button">Aceptar</button>`
+                : `<button class="retornar-button">Retornar</button>
+                   <button class="finalizar-button">Finalizar</button>`
+            }
+        </div>
+      `;
 
         if (turno.estado === "espera") {
           listaTurnosEnEspera.appendChild(turnoElement);

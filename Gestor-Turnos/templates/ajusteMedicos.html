@@ -27,23 +27,30 @@
     <div id="main-container">
       <!-- Campos para registro -->
       <div id="registro">
-        <label for="nombreVeterinario"></label>
-        <input
-          id="nombreVeterinario"
-          type="text"
-          required
-          placeholder="Ingrese Nombre"
-        />
-        <label for="apellidoVeterinario"></label>
-        <input
-          id="apellidoVeterinario"
-          type="text"
-          required
-          placeholder="Ingrese Apellido"
-        />
-        <label for="rol"></label>
-        <input id="rol" type="text" required placeholder="Ingrese Rol" />
-        <button id="crearVeterinario">CREAR</button>
+        <div class="registro-form">
+          <label for="nombreVeterinario"></label>
+          <input
+            id="nombreVeterinario"
+            type="text"
+            required
+            placeholder="Ingrese Nombre"
+          />
+          <label for="apellidoVeterinario"></label>
+          <input
+            id="apellidoVeterinario"
+            type="text"
+            required
+            placeholder="Ingrese Apellido"
+          />
+          <label for="rol"></label>
+          <select id="rol" required>
+            <option value="" disabled selected>Seleccione Rol</option>
+            <option value="General">General</option>
+            <option value="Auxiliar">Auxiliar</option>
+            <option value="Cirujano">Cirujano</option>
+          </select>
+          <button id="crearVeterinario">CREAR</button>
+        </div>
       </div>
 
       <!-- Lista de veterinarios -->

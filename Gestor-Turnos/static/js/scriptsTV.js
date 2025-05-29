@@ -1,3 +1,4 @@
+import { enlace } from "./config.js"; // Importa la URL base desde config.js
 document.addEventListener("DOMContentLoaded", function () {
   const listaTurnosEnProceso = document.getElementById("listaTurnosEnProceso");
   const videoPublicidad = document.getElementById("videoPublicidad");
@@ -10,11 +11,15 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!response.ok) throw new Error("Error al obtener los turnos");
 
       const turnos = await response.json();
-      console.log("Turnos obtenidos:", turnos); // 👀 Verifica los turnos en la consola
+      console.log("Turnos obtenidos:", turnos);
 
       listaTurnosEnProceso.innerHTML = "";
 
+      // Filtrar solo los turnos en proceso
       let turnosProceso = turnos.filter((turno) => turno.estado === "proceso");
+
+      // Ordenar por fecha descendente (más recientes primero)
+      turnosProceso.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
       if (turnosProceso.length === 0) {
         listaTurnosEnProceso.innerHTML = "<li>No hay turnos en proceso</li>";
@@ -25,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="turno-codigo">${turno.codigo}</div>
                         <div class="turno-detalles">
                             <strong></strong> ${turno.nombre_mascota} <br>
-                            <strong></strong> ${turno.servicio} <br>
                             <strong>Dr. </strong> ${
                               turno.nombre_veterinario || "N/A"
                             } <br>
@@ -37,7 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
           listaTurnosEnProceso.appendChild(turnoElement);
         });
 
-        // Comparar turnos en proceso actuales con los previos
         const nuevosTurnosEnProceso = turnosProceso.filter(
           (turno) =>
             !turnosEnProcesoPrevios.some(
@@ -46,10 +49,9 @@ document.addEventListener("DOMContentLoaded", function () {
         );
 
         if (nuevosTurnosEnProceso.length > 0) {
-          audioTv.play(); // Reproducir sonido de notificación
+          audioTv.play();
         }
 
-        // Actualizar el estado de turnos en proceso previos
         turnosEnProcesoPrevios = turnosProceso;
       }
     } catch (error) {

@@ -1,7 +1,6 @@
 from db import get_db_connection
 from flask import jsonify, request
 from datetime import datetime
-from models.turno import Turno
 
 def registrar_turno():
     try:
@@ -18,7 +17,7 @@ def registrar_turno():
         servicio = data.get("servicio")
         id_veterinario = data.get("id_veterinario") or None
         estado = "espera"
-        fecha = datetime.now().strftime("%Y-%m-%d")
+        fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Fecha y hora actual
 
         if not codigo_mascota or not nombre_mascota or not servicio:
             return jsonify({"error": "Faltan datos obligatorios"}), 400
@@ -95,6 +94,7 @@ def obtener_turnos():
             FROM turnos t
             LEFT JOIN mascotas m ON t.mascota_id = m.id
             LEFT JOIN veterinarios v ON t.veterinario_id = v.id
+            WHERE t.estado != 'finalizado'        
         """)
         turnos_data = cur.fetchall()
         cur.close()
@@ -144,9 +144,11 @@ def actualizar_turno(turno_id):
         conn = get_db_connection()
         cur = conn.cursor()
 
+        fecha_actualizacion = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Nueva fecha y hora
+
         cur.execute(
-            "UPDATE turnos SET estado = %s, modulo = %s, veterinario_id = %s WHERE id = %s",
-            (estado, modulo, veterinario_id, turno_id)
+            "UPDATE turnos SET estado = %s, modulo = %s, veterinario_id = %s, fecha = %s WHERE id = %s",
+            (estado, modulo, veterinario_id, fecha_actualizacion, turno_id)
         )
         conn.commit()
         cur.close()

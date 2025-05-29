@@ -1,159 +1,206 @@
 /* tv.css */
-@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Montserrat:wght@700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Montserrat:wght@700&display=swap");
 
 /* Estilos generales */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Evita scroll en toda la pantalla */
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 /* Encabezado */
 .top-header {
-    background-color: #678896;
-    color: white;
-    padding: 10px 20px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  background-color: #678896;
+  color: white;
+  padding: 10px 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .header-content {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .logo-container img {
-    width: 50px;
-    height: auto;
+  width: 50px;
+  height: auto;
 }
 
 /* Contenedor principal */
 .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 99vw;
+  height: 80vh;
+  gap: 1vw;
+  padding: 1vw;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 /* Sección de turnos */
-.turnos, .publicidad {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 48%;
-    text-align: center;
+.turnos,
+.publicidad {
+  background: white;
+  padding: 10px 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 49vw;
+  max-width: 49vw;
+  height: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: center;
 }
 
-.turnos h2, .publicidad h2 {
-    color: #678896;
+.turnos h2,
+.publicidad h2 {
+  color: #678896;
 }
 
 /* Lista de turnos */
 #listaTurnosEnProceso {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: calc(100% - 3em); /* Ajusta para dejar espacio al título */
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  overflow: hidden;
+  justify-content: flex-start;
 }
 
 #listaTurnosEnProceso li {
-    background: #e9ecef;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  background: #e9ecef;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: none;
+  font-size: 1.1em;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0.2em 0.7em;
+  margin: 0;
+}
+
+/* Asegura que los textos internos no se desborden ni se superpongan */
+.turno-codigo,
+.turno-detalles,
+.turno-consultorio {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .turno-codigo {
-    font-size: 3em;
-    font-weight: 700; /* Extra negrita */
-    color: #678896;
-    flex: 1;
-    text-align: left;
-    font-family: 'Poppins', sans-serif; /* Puedes cambiar a 'Montserrat' si prefieres */
+  font-size: 2em;
+  font-weight: 700;
+  color: #678896;
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: left;
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .turno-detalles {
-    font-size: 1.5em;
-    flex: 2;
-    text-align: left;
-    margin-left: 10px;
-    font-family: 'Itim', cursive;
+  font-size: 1em;
+  flex: 2 1 0;
+  min-width: 0;
+  text-align: left;
+  margin-left: 0;
+  font-family: "Itim", cursive;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Reduce el tamaño de .turno-detalles a partir del séptimo ítem */
+#listaTurnosEnProceso li:nth-child(n + 7) .turno-detalles {
+  font-size: 0.8em;
+}
+
+/* Si hay 1 o 2 ítems, reduce la altura de los elementos */
+#listaTurnosEnProceso:has(li:nth-child(2)) li,
+#listaTurnosEnProceso:has(li:only-child) li {
+  min-height: 2.5em;
+  max-height: 2.5em;
+  height: 2.5em;
+}
+
+/* Si hay más de 2 ítems, altura normal para que quepan 8 */
+#listaTurnosEnProceso li {
+  min-height: 0;
+  max-height: none;
+  height: auto;
 }
 
 .turno-consultorio {
-    font-size: 3em;
-    font-weight: 700; /* Extra negrita */
-    color: #678896;
-    flex: 1;
-    text-align: right;
-    font-family: 'Poppins', sans-serif; /* Puedes cambiar a 'Montserrat' si prefieres */
-    white-space: nowrap; /* Evita que el texto se desborde */
-    margin-left: -20px; /* Mueve el elemento un poco más a la izquierda */
+  font-size: clamp(0.8em, 2vw, 2em); /* Tamaño adaptable */
+  font-weight: 700;
+  color: #678896;
 }
 
 /* Video */
 video {
-    width: 100%;
-    border-radius: 10px;
+  width: 100%;
+  height: 60vh;
+  max-width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
 }
 
 /* Responsividad */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .turnos, .publicidad {
-        width: 90%;
-        margin-bottom: 20px;
-    }
+@media (max-width: 1200px) {
+  .container {
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    gap: 1vh;
+    padding: 1vw;
+  }
+  .turnos,
+  .publicidad {
+    width: 98vw;
+    max-width: 98vw;
+    height: 45vh;
+  }
+  video {
+    height: 30vh;
+  }
 }
 
 /*logo */
 .logo-container img {
-    width: 250px;  /* Aumenta el tamaño del logo */
-    height: 70px;   /* Mantiene la proporción */
-    margin-left: 100px;
+  width: 250px; /* Aumenta el tamaño del logo */
+  height: 70px; /* Mantiene la proporción */
+  margin-left: 100px;
 }
-
-.container {
-    display: flex;
-    justify-content: space-between; /* Espacio entre los elementos */
-    align-items: flex-start;
-    gap: 50px; /* Espaciado entre turnos y publicidad */
-    padding: 20px;
-}
-
-.turnos, .publicidad {
-    flex: 1; /* Ambos toman el mismo espacio */
-    max-width: 80%; /* Evita que se expandan demasiado */
-}
-
-.publicidad {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-#videoPublicidad {
-    width: 100%; /* Que ocupe todo el ancho disponible */
-    height: 50vh; /* 50% de la altura de la pantalla */
-    object-fit: cover; /* Ajusta el contenido sin deformarlo */
-    max-width: 600px; /* Opcional: Limita su ancho en pantallas grandes */
-}
-
-
