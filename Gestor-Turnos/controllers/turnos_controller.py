@@ -18,9 +18,18 @@ def registrar_turno():
         id_veterinario = data.get("id_veterinario") or None
         estado = "espera"
         fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Fecha y hora actual
+        fecha_dia = datetime.now().strftime("%Y-%m-%d")  # Solo la fecha para filtrar por día
 
         if not codigo_mascota or not nombre_mascota or not servicio:
             return jsonify({"error": "Faltan datos obligatorios"}), 400
+
+        # Definir prefijos por servicio
+        prefijos = {
+            "control": "CL",
+            "cirugia": "CI",
+            "ecografia": "EC"
+        }
+        prefijo = prefijos.get(servicio.lower(), servicio[0].upper())
 
         conn = get_db_connection()
         cur = conn.cursor()
@@ -35,26 +44,24 @@ def registrar_turno():
             # Insertar nueva mascota
             cur.execute("INSERT INTO mascotas (id, nombre) VALUES (%s, %s) RETURNING id", (codigo_mascota, nombre_mascota))
             id_mascota = cur.fetchone()["id"]
-            print("Nueva mascota registrada:", id_mascota)  # Depuración
 
-        # Obtener último turno del día
+        # Obtener último turno del día para ese servicio
         cur.execute(
-            "SELECT codigo FROM turnos WHERE fecha = %s ORDER BY id DESC LIMIT 1",
-            (fecha,)
+            "SELECT codigo FROM turnos WHERE servicio = %s AND fecha::date = %s::date ORDER BY id DESC LIMIT 1",
+            (servicio, fecha_dia)
         )
         last_turno = cur.fetchone()
-        print("Último turno obtenido:", last_turno)  # Depuración
         if last_turno:
             try:
-                last_num = int(last_turno["codigo"][2:])
+                last_num = int(last_turno["codigo"][-2:])
                 numero = (last_num + 1) if last_num < 99 else 1
             except ValueError:
                 return jsonify({"error": "Formato de código inválido"}), 500
         else:
             numero = 1
 
-        # Generar el código según el servicio
-        codigo = servicio[0].upper() + str(numero).zfill(2)
+        # Generar el código según el servicio y el contador
+        codigo = f"{prefijo}{str(numero).zfill(2)}"
 
         # Insertar el nuevo turno
         cur.execute(
@@ -66,23 +73,21 @@ def registrar_turno():
         cur.close()
         conn.close()
 
-        print("Turno registrado exitosamente:", nuevo_turno)  # Depuración
-        # Estructurar la respuesta
         turno_dict = {
             "id": nuevo_turno["id"],
             "codigo": nuevo_turno["codigo"],
             "servicio": nuevo_turno["servicio"],
             "estado": nuevo_turno["estado"],
             "fecha": nuevo_turno["fecha"],
-            "mascota_id": nuevo_turno["mascota_id"],  
+            "mascota_id": nuevo_turno["mascota_id"],
             "veterinario_id": nuevo_turno["veterinario_id"],
-            "codigo_mascota": codigo_mascota  # Incluir el código de la mascota
+            "codigo_mascota": codigo_mascota
         }
 
         return jsonify({"message": "Turno registrado", "turno": turno_dict}), 201
 
     except Exception as e:
-        print("Error en registrar_turno:", str(e))  # Depuración
+        print("Error en registrar_turno:", str(e))
         return jsonify({"error": str(e)}), 500
 
 def obtener_turnos():
