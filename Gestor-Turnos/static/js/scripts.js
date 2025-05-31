@@ -1,4 +1,28 @@
 import { enlace } from "./config.js"; // Importar la variable Enlace desde el archivo config.js
+
+// --- Toast notification utility ---
+function showToast(message, type = "success") {
+  let container = document.querySelector(".toast-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(-20px)";
+    setTimeout(() => toast.remove(), 400);
+  }, 3000);
+}
+// --- Fin Toast notification utility ---
+
 document.addEventListener("DOMContentLoaded", function () {
   const mascotaInput = document.getElementById("mascota");
   const codigoMascotaInput = document.getElementById("codigo_mascota");
@@ -46,8 +70,17 @@ document.addEventListener("DOMContentLoaded", function () {
       ? parseInt(veterinarioSelect.value)
       : null;
 
+    // Validar que el código de mascota no sea negativo
+    if (codigo_mascota && Number(codigo_mascota) < 0) {
+      showToast("El código de mascota no puede ser negativo.", "error");
+      return;
+    }
+
     if (!codigo_mascota || !nombre_mascota || !servicio) {
-      alert("Por favor, completa todos los campos antes de crear el turno.");
+      showToast(
+        "Por favor, completa todos los campos antes de crear el turno.",
+        "error"
+      );
       return;
     }
 
@@ -69,16 +102,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (response.ok) {
         const result = await response.json();
-        alert("Turno registrado exitosamente");
+        showToast("Turno registrado exitosamente", "success");
 
         limpiarInputs();
         actualizarListaTurnos();
       } else {
         const error = await response.json();
-        alert("Error al registrar el turno: " + error.error);
+        showToast("Error al registrar el turno: " + error.error, "error");
       }
     } catch (error) {
       console.error("Error al registrar el turno:", error);
+      showToast("Error al registrar el turno.", "error");
     }
   }
 
@@ -103,6 +137,9 @@ document.addEventListener("DOMContentLoaded", function () {
           return 1;
         return new Date(a.fecha) - new Date(b.fecha);
       });
+
+      // Mostrar el turno más reciente primero
+      turnos.reverse();
 
       turnos.forEach((turno) => {
         const turnoElement = document.createElement("div");
@@ -136,13 +173,17 @@ document.addEventListener("DOMContentLoaded", function () {
               });
               if (response.ok) {
                 turnoElement.remove();
-                alert("Turno eliminado exitosamente");
+                showToast("Turno eliminado exitosamente", "success");
               } else {
                 const error = await response.json();
-                alert("Error al eliminar el turno: " + error.error);
+                showToast(
+                  "Error al eliminar el turno: " + error.error,
+                  "error"
+                );
               }
             } catch (error) {
               console.error("Error al eliminar el turno:", error);
+              showToast("Error al eliminar el turno.", "error");
             }
           });
 
@@ -150,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     } catch (error) {
       console.error("Error al actualizar la lista de turnos:", error);
+      showToast("Error al actualizar la lista de turnos.", "error");
     }
   }
 
@@ -167,6 +209,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     } catch (error) {
       console.error("Error cargando veterinarios:", error);
+      showToast("Error cargando veterinarios.", "error");
     }
   }
 

@@ -1,4 +1,28 @@
 import { enlace } from "./config.js"; // Importar la variable Enlace desde el archivo config.js
+
+// --- Toast notification utility ---
+function showToast(message, type = "success") {
+  let container = document.querySelector(".toast-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(-20px)";
+    setTimeout(() => toast.remove(), 400);
+  }, 3000);
+}
+// --- Fin Toast notification utility ---
+
 document.addEventListener("DOMContentLoaded", function () {
   const nombreVeterinarioInput = document.getElementById("nombreVeterinario");
   const apellidoVeterinarioInput = document.getElementById(
@@ -14,8 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const rol = rolInput.value.trim();
 
     if (!nombre || !apellido || !rol) {
-      alert(
-        "Por favor, completa todos los campos antes de crear el veterinario."
+      showToast(
+        "Por favor, completa todos los campos antes de crear el veterinario.",
+        "error"
       );
       return;
     }
@@ -37,14 +62,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (response.ok) {
         const result = await response.json();
-        alert("Veterinario registrado exitosamente");
+        showToast("Veterinario registrado exitosamente", "success");
         cargarVeterinarios();
       } else {
         const error = await response.json();
-        alert("Error al registrar el veterinario: " + error.error);
+        showToast("Error al registrar el veterinario: " + error.error, "error");
       }
     } catch (error) {
       console.error("Error al registrar el veterinario:", error);
+      showToast("Error al registrar el veterinario.", "error");
     }
   }
 
@@ -56,6 +82,9 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       const veterinarios = await response.json();
       listaVeterinarios.innerHTML = "";
+
+      // Mostrar los veterinarios más recientes primero
+      veterinarios.reverse();
 
       veterinarios.forEach((vet) => {
         const vetElement = document.createElement("li");
@@ -73,19 +102,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: "DELETE",
               });
               if (response.ok) {
-                alert("Veterinario eliminado exitosamente");
+                showToast("Veterinario eliminado exitosamente", "success");
                 cargarVeterinarios();
               } else {
                 const error = await response.json();
-                alert("Error al eliminar el veterinario: " + error.error);
+                showToast(
+                  "Error al eliminar el veterinario: " + error.error,
+                  "error"
+                );
               }
             } catch (error) {
               console.error("Error al eliminar el veterinario:", error);
+              showToast("Error al eliminar el veterinario.", "error");
             }
           });
       });
     } catch (error) {
       console.error("Error al cargar los veterinarios:", error);
+      showToast("Error al cargar los veterinarios.", "error");
     }
   }
 
